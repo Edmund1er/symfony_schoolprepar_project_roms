@@ -1,0 +1,14 @@
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Page d'accueil</h1>
+    <p>Bienvenue sur SchoolPrepar </p>
+    
+
+    <p>etudiant developpeur : <strong>{{ etudiant }}</strong></p> 
+
+    <h1>Quelques etablissements</h1>
+ {{ render(controller('App\\Controller\\SchoolController::liste')) }}
+
+{% endblock %}
