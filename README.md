@@ -1,83 +1,136 @@
-# SchoolPrepar
 
-##  Architecture Technique
 
- **Framework :** Symfony 6/7
- **Moteur de template :** Twig 
- **Contrôleurs :** 
-    - `MainController` : Gestion de la page d'accueil dynamique.
-    - `SchoolController` : Gestion des fiches établissements.
+Plateforme d'orientation scolaire et professionnelle développée avec Symfony.
 
-**Outils de versionnage qu'on va utilisé :** Git
+---
+
+## Architecture Technique
+
+| Composant | Technologie |
+|-----------|-------------|
+| Framework | Symfony 7.2 |
+| Moteur de templates | Twig |
+| ORM | Doctrine |
+| Base de données | MySQL |
+| Gestion de versions | Git |
+
+### Structure des contrôleurs
+
+| Contrôleur | Rôle |
+|------------|------|
+| `MainController` | Pages publiques (accueil) |
+| `SchoolController` | Gestion des établissements (front-office) |
+| `Admin\AdminFiliereController` | CRUD filières (back-office) |
+| `Admin\AdminEtablissementController` | CRUD établissements (back-office) |
+| `Admin\AdminUtilisateurController` | CRUD utilisateurs (back-office) |
+| `Admin\AdminDashboardController` | Tableau de bord administrateur |
+
+---
 
 ## Installation et Lancement
 
-Pour avoir et exécuter ce projet localement :
+### Prérequis
 
-1.  **on doit cloner le projet:**
+- PHP 8.2 ou supérieur
+- Composer
+- MySQL
+- Symfony CLI (recommandé) ou WAMP/XAMPP
 
- dans git bash ou dans le cmd on se place dans le dossier dans le quel on veux avoir le projet 
- - ensuite on tape la commande : 
- 
-    `git clone https://github.com/Edmund1er/symfony_schoolprepar_project_roms.git`
-    
-2.  **on doit installer composer et les dependances :**
+### Étapes d'installation
 
-    on entre dans le dossier du projet et installez les bibliothèques nécessaires avec Composer avec cette commande :
-        `composer install`
+**1. Cloner le projet**
 
-3.  **on démarre le serveur   :**
-    
-    * **avec le serveur Symfony**
-       Lancez le serveur local de Symfony : `symfony server:start`
+```bash
+git clone https://github.com/Edmund1er/symfony_schoolprepar_project_roms.git
+cd symfony_schoolprepar_project_roms
 
-        Accédez ensuite à l'adresse : `http://localhost:8000`
-     pour voir la page d'accueil il faut aller a l'afresse : `http://127.0.0.1:8000/accueil`
+2. Installer les dépendances
+bash
 
-    * **avec WAMP / XAMPP**
+composer install
 
-        1. Déplacez le dossier du projet dans `C:\wamp64\www` ou `C:\xampp\htdocs`.
-        2. Lancez WAMP ou XAMPP.
-        3. Accédez à l'adresse : `http://localhost/schoolprepar/public/`
-  
-    
-    Le dossier /public/ est obligatoire car c'est là que se trouve le point d'entrée de Symfony
+3. Configurer la base de données
 
-##  les pages
+Copier le fichier .env en .env.local et modifier la variable DATABASE_URL :
+env
 
-Une fois qu'on a lancé le serveur, on pouvez teste les routes suivantes :
-* **Accueil Dynamique :** `/accueil` 
-* **Liste des Établissements :** `/liste_etablissement` 
+DATABASE_URL="mysql://root:password@127.0.0.1:3306/schoolprepar_db?serverVersion=8.0.32&charset=utf8mb4"
 
-## 5. Auteurs
-* **Nom & Prénoms :** ALI Pouwèdéou
-* **Filière :** GL Licence 2 - Semestre 4
-* **Institution :** IPNet Institute of Technology
-* **Année Académique :** 2025-2026
+4. Créer et migrer la base de données
+bash
 
+php bin/console doctrine:database:create
+php bin/console doctrine:migrations:migrate
 
-## 📂 Navigation et Structure des Templates
+5. Lancer le serveur
 
-Le projet utilise un système d'héritage de templates pour garantir une interface cohérente.
+Méthode A - Symfony CLI (recommandé)
+bash
 
-### 🗺️ Détail des Routes
-| Page | Route | Contrôleur | Template Twig |
-| :--- | :--- | :--- | :--- |
-| **Accueil** | `/accueil` | `MainController` | `templates/main/index.html.twig` |
-| **Liste Établissements** | `/liste_etablissement` | `SchoolController` | `templates/school/index.html.twig` |
-| **Admin : Dashboard** | `/admin/etablissement` | `Admin/EtablissementController` | `templates/admin/etablissement/index.html.twig` |
+symfony server:start
 
-### 🏗️ Organisation des Templates 
+Accéder à : http://localhost:8000
 
-Toutes les pages de l'administration héritent d'une structure commune pour maintenir le design **Material Able** :
+Méthode B - WAMP / XAMPP
 
-1. **`base.html.twig`** : Contient la structure HTML globale, les imports CSS (dont notre `style.css` modifié) et les scripts JS.
-2. **Blocs dynamiques** :
-    * `{% block title %}` : Définit le titre de l'onglet dynamiquement.
-    * `{% block body %}` : Injecte le contenu spécifique de chaque page (tableaux, formulaires).
+    Déplacer le projet dans C:\wamp64\www\ ou C:\xampp\htdocs\
 
-### 🎨 Personnalisations CSS (Design Fixes)
-Le fichier `public/assets/admin/css/style.css` a été optimisé pour corriger les défauts du template original :
-* **Sidebar (Barre bleue) :** Largeur augmentée à **280px** pour éviter que les titres longs comme *"Gestion des établissements"* ne débordent.
-* **Scroll Dynamique :** Ajout d'un overflow vertical (`scroll`) sur le menu latéral pour permettre l'accès à tous les modules, même sur petit écran.
-* **Mise en page :** Ajustement des marges du contenu principal (`pcoded-content`) pour s'aligner sur la nouvelle largeur du menu.
+    Démarrer WAMP ou XAMPP
+
+    Accéder à : http://localhost/symfony_schoolprepar_project_roms/public/
+
+Routes disponibles
+Front-office (public)
+Page	Route	Description
+Accueil	/ ou /accueil	Page d'accueil dynamique
+Liste des établissements	/liste_etablissement	Voir tous les établissements
+Back-office (administration)
+Page	Route	Description
+Dashboard	/admin	Tableau de bord administrateur
+Gestion des filières	/admin/filiere	CRUD complet des filières
+Gestion des établissements	/admin/etablissement	CRUD complet des établissements
+Gestion des utilisateurs	/admin/utilisateur	CRUD complet des utilisateurs
+Structure des templates
+text
+
+templates/
+├── admin/
+│   ├── base.html.twig
+│   ├── dashboard.html.twig
+│   ├── filiere/
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── show.html.twig
+│   │   ├── _form.html.twig
+│   │   └── _delete_form.html.twig
+│   ├── etablissement/
+│   └── utilisateur/
+├── front/
+└── partials/
+
+Modèle de données
+Entités principales
+Entité	Rôle	Relations
+Filiere	Filières de formation	1:N vers User
+Etablissement	Établissements scolaires	-
+User	Utilisateurs (élèves, mentors, admins)	N:1 vers Filiere, N:N vers Evenement
+Evenement	Événements (webinaires, portes ouvertes)	N:N vers User
+Relations implémentées
+Type	Entités	Table de liaison
+1:N	Filiere → User	user.filiere_id
+N:N	User ↔ Evenement	user_evenement
+Auteur
+Champ	Information
+Nom	ALI Pouwèdéou Romaric
+Filière	GL (Génie Logiciel) - Licence 2
+Semestre	4
+Institution	IPNet Institute of Technology
+Année académique	2025-2026
+UE	IT 232 - Développement Web II
+Encadrant	M. EDOU Dodji
+Dépôt GitHub
+
+https://github.com/Edmund1er/symfony_schoolprepar_project_roms.git
+text
+
