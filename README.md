@@ -95,8 +95,6 @@ Méthode B - WAMP / XAMPP
 | Gestion des établissements | `/admin/etablissement` | CRUD complet des établissements |
 | Gestion des utilisateurs | `/admin/utilisateur` | CRUD complet des utilisateurs |
 
----
-
 ## Structure des templates
 
 templates/
@@ -130,23 +128,26 @@ Toutes les pages héritent de `base.html.twig` qui contient :
 
 ### Entités principales
 
+## Modèle de données
+
+### Entités principales
+
 | Entité | Rôle | Relations |
 |--------|------|-----------|
-| `Filiere` | Filières de formation | 1:N vers `User` |
-| `Etablissement` | Établissements scolaires | - |
-| `User` | Utilisateurs (élèves, mentors, admins) | N:1 vers `Filiere`, N:N vers `Evenement` |
-| `Evenement` | Événements (webinaires, portes ouvertes) | N:N vers `User` |
+| Filiere | Filières de formation | 1:N vers User |
+| Etablissement | Établissements scolaires | - |
+| User | Utilisateurs (élèves, mentors, admins) | N:1 vers Filiere, N:N vers Evenement |
+| Evenement | Événements (webinaires, portes ouvertes) | N:N vers User |
 
 ### Relations implémentées
 
 | Type | Entités | Table de liaison |
 |------|---------|------------------|
-| 1:N | Filiere → User | `user.filiere_id` |
-| N:N | User ↔ Evenement | `user_evenement` |
-
----
+| 1:N | Filiere → User | user.filiere_id |
+| N:N | User ↔ Evenement | user_evenement |
 
 ## Auteur
+
 
 | Champ | Information |
 |-------|-------------|
