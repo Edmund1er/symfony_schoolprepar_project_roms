@@ -1,0 +1,60 @@
+<header class="site-header">
+    <div class="top-header-bar">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-lg-6 d-none d-md-flex flex-wrap justify-content-center justify-content-lg-start mb-3 mb-lg-0">
+                    <div class="header-bar-email d-flex align-items-center">
+                        <i class="fa fa-envelope"></i><a href="mailto:contact@schoolprepar.tg">contact@schoolprepar.tg</a>
+                    </div>
+                    <div class="header-bar-text lg-flex align-items-center">
+                        <p><i class="fa fa-phone"></i>+228 90 00 00 00</p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-lg-6 d-flex flex-wrap justify-content-center justify-content-lg-end align-items-center">
+                    <div class="header-bar-search">
+                        <form class="flex align-items-stretch">
+                            <input type="search" placeholder="Que voulez-vous apprendre ?">
+                            <button type="submit" class="flex justify-content-center align-items-center"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                    <div class="header-bar-menu">
+                        <ul class="flex justify-content-center align-items-center py-2 pt-md-0">
+                            <li><a href="#">Inscription</a></li>
+                            <li><a href="#">Connexion</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="container">
+            <div class="row">
+                <div class="col-9 col-lg-3">
+                    <div class="site-branding">
+                        {# Correction : app_home au lieu de home #}
+                        <h1 class="site-title"><a href="{{ path('app_home') }}" rel="home">Ezu<span>ca</span></a></h1>
+                    </div>
+                </div>
+
+                <div class="col-3 col-lg-9 flex justify-content-end align-content-center">
+                    <nav class="site-navigation flex justify-content-end align-items-center">
+                        <ul class="flex flex-column flex-lg-row justify-content-lg-end align-content-center">
+                            {# Correction des noms de routes #}
+                            <li><a href="{{ path('app_home') }}">Accueil</a></li>
+                            <li><a href="#">À propos</a></li>
+                            <li><a href="{{ path('filiere_index') }}">Filières</a></li>
+                            <li><a href="{{ path('etablissement_index') }}">Établissements</a></li>
+                            <li><a href="#">Contact</a></li>
+                        </ul>
+                        <div class="hamburger-menu d-lg-none">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

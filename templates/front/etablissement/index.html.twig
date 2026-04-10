@@ -1,0 +1,75 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Établissements - SchoolPrepar{% endblock %}
+{% block body_class %}courses-page{% endblock %}
+
+{% block body %}
+    <div class="page-header-overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <header class="entry-header">
+                        <h1>Nos Établissements</h1>
+                    </header>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumbs">
+                    <ul class="flex flex-wrap align-items-center p-0 m-0">
+                        <li><a href="{{ path('app_home') }}"><i class="fa fa-home"></i> Accueil</a></li>
+                        <li>Établissements</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p class="lead mt-4">
+            Découvrez les établissements partenaires disponibles sur la plateforme SchoolPrepar.
+        </p>
+
+        <div class="row">
+            {# Ici, nous préparerons la boucle pour afficher les établissements de la base de données #}
+            {% for etablissement in etablissements|default([]) %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        {# Optionnel : Image de l'établissement #}
+                        <img src="{{ asset('assets/front/images/school-placeholder.jpg') }}" class="card-img-top" alt="Image établissement">
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">{{ etablissement.nom|default("Nom de l'établissement") }}</h5>
+                            <p class="card-text">
+                                {{ etablissement.description|default("Une brève description de l'établissement et de sa localisation.") }}
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            {# Route vers le détail de l'établissement #}
+                            <a href="#" class="btn btn-primary">Voir les détails</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                {# Contenu statique temporaire si la base de données est vide #}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">IPNET Institute of Technology</h5>
+                            <p class="card-text">Institut spécialisé en informatique et technologies de l'information à Lomé.</p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="#" class="btn btn-primary">Voir les détails</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-4 mb-5">
+            <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
+        </div>
+    </div>
+{% endblock %}

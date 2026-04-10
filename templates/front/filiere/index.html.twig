@@ -1,0 +1,98 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Filières - SchoolPrepar{% endblock %}
+{% block body_class %}courses-page{% endblock %}
+
+{% block body %}
+    <div class="page-header-overlay">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <header class="entry-header">
+                        <h1>Nos Filières</h1>
+                    </header>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumbs">
+                    <ul class="flex flex-wrap align-items-center p-0 m-0">
+                        {# Correction : app_home au lieu de home #}
+                        <li><a href="{{ path('app_home') }}"><i class="fa fa-home"></i> Accueil</a></li>
+                        <li>Filières</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="featured-courses courses-wrap">
+                    <div class="row mx-m-25">
+                        
+                        {# Cours 1 #}
+                        <div class="col-12 col-md-6 px-25">
+                            <div class="course-content">
+                                <figure class="course-thumbnail">
+                                    {# Chemin corrigé : assets/front/images/ #}
+                                    <a href="#"><img src="{{ asset('assets/front/images/1.jpg') }}" alt="Android Course"></a>
+                                </figure>
+                                <div class="course-content-wrap">
+                                    <header class="entry-header">
+                                        <h2 class="entry-title"><a href="#">The Complete Android Developer Course</a></h2>
+                                    </header>
+                                    <footer class="entry-footer flex justify-content-between align-items-center">
+                                        <div class="course-cost">$45</div>
+                                    </footer>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Cours 2 #}
+                        <div class="col-12 col-md-6 px-25">
+                            <div class="course-content">
+                                <figure class="course-thumbnail">
+                                    {# Chemin corrigé : assets/front/images/ #}
+                                    <a href="#"><img src="{{ asset('assets/front/images/2.jpg') }}" alt="Drawing Course"></a>
+                                </figure>
+                                <div class="course-content-wrap">
+                                    <header class="entry-header">
+                                        <h2 class="entry-title"><a href="#">The Ultimate Drawing Course</a></h2>
+                                    </header>
+                                    <footer class="entry-footer flex justify-content-between align-items-center">
+                                        <div class="course-cost"><span class="free-cost">Free</span></div>
+                                    </footer>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="sidebar">
+                    <div class="latest-courses">
+                        <h2>Dernières Filières</h2>
+                        <ul class="p-0 m-0">
+                            <li class="flex flex-wrap justify-content-between align-items-center">
+                                {# Chemin corrigé : assets/front/images/ #}
+                                <img src="{{ asset('assets/front/images/t-1.jpg') }}" alt="Finance">
+                                <div class="content-wrap">
+                                    <h3><a href="#">Financial Analyst Training</a></h3>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="ads">
+                        {# Chemin corrigé : assets/front/images/ #}
+                        <img src="{{ asset('assets/front/images/ads.jpg') }}" alt="Publicité">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{# templates/front/base.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}SchoolPrepar{% endblock %}</title>
+
+    {# --- CSS Front-office --- #}
+    <link rel="stylesheet" href="{{ asset('assets/front/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/front/css/font-awesome.min.css') }}">
+    {# Le fichier style.css est à la racine de front #}
+    <link rel="stylesheet" href="{{ asset('assets/front/style.css') }}">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    
+    {# Inclusion de la navigation #}
+    {% include 'front/partials/nav.html.twig' %}
+
+    {# Contenu principal #}
+    {% block body %}{% endblock %}
+
+    {# Inclusion du pied de page #}
+    {% include 'front/partials/footer.html.twig' %}
+
+    {# --- JS Front-office --- #}
+    <script src="{{ asset('assets/front/js/jquery.js') }}"></script>
+  
+    <script src="{{ asset('assets/front/js/custom.js') }}"></script>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,68 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Filières{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Filières</h5>
+                    <p class="m-b-0">Gestion des filières de formation</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="#">Filières</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Liste des filières</h5>
+                        <a href="{{ path('app_admin_filiere_new') }}" class="btn btn-primary float-right">+ Nouvelle filière</a>
+                    </div>
+                    <div class="card-block">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nom</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for filiere in filieres %}
+                                <tr>
+                                    <td>{{ filiere.id }}</td>
+                                    <td>{{ filiere.nom }}</td>
+                                    <td>{{ filiere.description }}</td>
+                                    <td>
+                                        <a href="{{ path('app_admin_filiere_show', {'id': filiere.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                        <a href="{{ path('app_admin_filiere_edit', {'id': filiere.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center">Aucune filière trouvée</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

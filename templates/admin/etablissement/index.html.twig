@@ -1,0 +1,70 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Établissements{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Établissements</h5>
+                    <p class="m-b-0">Gestion des établissements scolaires</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="#">Établissements</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Liste des établissements</h5>
+                        <a href="{{ path('app_admin_etablissement_new') }}" class="btn btn-primary float-right">+ Nouvel établissement</a>
+                    </div>
+                    <div class="card-block">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Nom</th>
+                                    <th>Adresse</th>
+                                    <th>Email</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for etablissement in etablissements %}
+                                <tr>
+                                    <td>{{ etablissement.id }}</td>
+                                    <td>{{ etablissement.nom }}</td>
+                                    <td>{{ etablissement.adresse }}</td>
+                                    <td>{{ etablissement.email }}</td>
+                                    <td>
+                                        <a href="{{ path('app_admin_etablissement_show', {'id': etablissement.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                        <a href="{{ path('app_admin_etablissement_edit', {'id': etablissement.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">Aucun établissement trouvé</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

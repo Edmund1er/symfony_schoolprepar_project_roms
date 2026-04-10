@@ -1,8 +1,4 @@
 
-accueil_site: 
-    path: /accueil              
-    controller: App\Controller\MainController::index
-
-liste_ecoles: 
-    path: /liste_etablissement   
-    controller: App\Controller\SchoolController::liste
+controllers:
+    resource: ../src/Controller/
+    type: attribute

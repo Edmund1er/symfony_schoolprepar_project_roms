@@ -1,0 +1,55 @@
+{# templates/admin/partials/aside.html.twig #}
+<nav class="pcoded-navbar">
+    <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+    
+    {# Le style ci-dessous force la zone à défiler quoi qu'il arrive #}
+    <div class="pcoded-inner-navbar main-menu" style="height: 100vh !important; overflow-y: auto !important; display: block !important;">
+        <div class="">
+            <div class="main-menu-header">
+                <img class="img-80 img-radius" src="{{ asset('assets/admin/images/avatar-4.jpg') }}" alt="User-Profile-Image">
+                <div class="user-details">
+                    <span id="more-details">seigneur Romaric<i class="fa fa-caret-down m-l-5"></i></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="pcoded-navigation-label">Tableau de bord</div>
+        <ul class="pcoded-item pcoded-left-item">
+            <li class="{{ app.request.get('_route') == 'app_admin_dashboard' ? 'active' : '' }}">
+                <a href="{{ path('app_admin_dashboard') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
+                    <span class="pcoded-mtext">Dashboard</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="pcoded-navigation-label">Gestion Contenus</div>
+        <ul class="pcoded-item pcoded-left-item">
+            <li class="{{ app.request.get('_route') == 'app_admin_filiere_index' ? 'active' : '' }}">
+                <a href="{{ path('app_admin_filiere_index') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-layers"></i><b>F</b></span>
+                    <span class="pcoded-mtext">Gestion des filières</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+            </li>
+            <li class="{{ app.request.get('_route') == 'app_admin_etablissement_index' ? 'active' : '' }}">
+                <a href="{{ path('app_admin_etablissement_index') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-direction-alt"></i><b>E</b></span>
+                    <span class="pcoded-mtext">Gestion des établissements</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+            </li>
+            <li class="{{ app.request.get('_route') == 'app_admin_utilisateur_index' ? 'active' : '' }}">
+                <a href="{{ path('app_admin_utilisateur_index') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-user"></i><b>U</b></span>
+                    <span class="pcoded-mtext">Gestion des utilisateurs</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+            </li>
+        </ul>
+        
+        {# On ajoute un espace vide en bas pour être sûr que le dernier bouton ne soit pas collé au bord #}
+        <div style="height: 150px;"></div>
+    </div>
+</nav>

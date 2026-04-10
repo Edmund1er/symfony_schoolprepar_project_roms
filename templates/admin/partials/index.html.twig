@@ -1,0 +1,97 @@
+{# templates/admin/etablissement/index.html.twig #}
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Établissements - Admin{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Gestion des Établissements</h5>
+                    <p class="m-b-0">Liste des institutions partenaires et centres de formation</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_admin_dashboard') }}"> <i class="fa fa-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item"><a href="#!">Gestion</a></li>
+                    <li class="breadcrumb-item"><a href="#!">Établissements</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Tableau des Établissements</h5>
+                        <span>Ici vous pouvez ajouter, modifier ou supprimer des établissements.</span>
+                        <div class="card-header-right">
+                            <ul class="list-unstyled card-option">
+                                <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                                <li><i class="fa fa-window-maximize full-card"></i></li>
+                                <li><i class="fa fa-minus minimize-card"></i></li>
+                                <li><i class="fa fa-refresh reload-card"></i></li>
+                                <li><i class="fa fa-trash close-card"></i></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-block table-border-style">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Logo</th>
+                                        <th>Nom de l'établissement</th>
+                                        <th>Ville / Localisation</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {# Exemple statique conforme au template Material Able #}
+                                    <tr>
+                                        <th scope="row">1</th>
+                                        <td>
+                                            {# Exemple de chemin d'image conforme à votre structure #}
+                                            <img src="{{ asset('assets/admin/images/favicon.ico') }}" alt="logo" class="img-40 img-radius">
+                                        </td>
+                                        <td>IPNET Institute of Technology</td>
+                                        <td>Lomé, Togo</td>
+                                        <td>
+                                            <button class="btn waves-effect waves-light btn-primary btn-outline-primary btn-sm"><i class="ti-pencil"></i></button>
+                                            <button class="btn waves-effect waves-light btn-danger btn-outline-danger btn-sm"><i class="ti-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">2</th>
+                                        <td>
+                                            <img src="{{ asset('assets/admin/images/favicon.ico') }}" alt="logo" class="img-40 img-radius">
+                                        </td>
+                                        <td>Université de Lomé</td>
+                                        <td>Lomé</td>
+                                        <td>
+                                            <button class="btn waves-effect waves-light btn-primary btn-outline-primary btn-sm"><i class="ti-pencil"></i></button>
+                                            <button class="btn waves-effect waves-light btn-danger btn-outline-danger btn-sm"><i class="ti-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        <button class="btn waves-effect waves-light btn-success"><i class="ti-plus"></i> Ajouter un établissement</button>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </div>
+    </div>
+{% endblock %}

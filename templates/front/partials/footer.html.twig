@@ -1,0 +1,67 @@
+<footer class="site-footer">
+    <div class="footer-widgets">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="foot-about">
+                        {# Chemin corrigé vers le logo du footer #}
+                        <a class="foot-logo" href="{{ path('app_home') }}">
+                            <img src="{{ asset('assets/front/images/foot-logo.png') }}" alt="Logo SchoolPrepar">
+                        </a>
+                        <p>SchoolPrepar vous aide à trouver la meilleure formation pour votre avenir.</p>
+                        <p class="footer-copyright">
+                            Copyright &copy; {{ "now"|date('Y') }} Tous droits réservés.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3 mt-5 mt-md-0">
+                    <div class="foot-contact">
+                        <h2>Contact</h2>
+                        <ul>
+                            <li>Email: info@schoolprepar.tg</li>
+                            <li>Phone: (+228) 22 22 22 22</li>
+                            <li>Lomé, Togo</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3 mt-5 mt-lg-0">
+                    <div class="quick-links flex flex-wrap">
+                        <h2 class="w-100">Liens Rapides</h2>
+                        <ul class="w-50">
+                            {# Correction : app_home au lieu de home #}
+                            <li><a href="{{ path('app_home') }}">Accueil</a></li>
+                            <li><a href="{{ path('filiere_index') }}">Filières</a></li>
+                            <li><a href="{{ path('etablissement_index') }}">Établissements</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6 col-lg-3 mt-5 mt-lg-0">
+                    <div class="follow-us">
+                        <h2>Suivez-nous</h2>
+                        <ul class="follow-us flex flex-wrap align-items-center">
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        <div class="container">
+            <div class="row flex-wrap justify-content-center justify-content-lg-between align-items-center">
+                <div class="col-12 col-lg-6">
+                    <div class="download-apps flex flex-wrap justify-content-center justify-content-lg-start align-items-center">
+                        {# Chemins corrigés vers les badges stores #}
+                        <a href="#"><img src="{{ asset('assets/front/images/app-store.png') }}" alt="App Store"></a>
+                        <a href="#"><img src="{{ asset('assets/front/images/play-store.png') }}" alt="Play Store"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

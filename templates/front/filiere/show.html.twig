@@ -1,0 +1,77 @@
+{# templates/filiere/show.html.twig #}
+{% extends 'front/base.html.twig' %}
+
+{% block title %}{{ filiere.nom }} - SchoolPrepar{% endblock %}
+{% block body_class %}single-courses-page{% endblock %}
+
+{% block body %}
+    <div class="page-header">
+        <div class="page-header-overlay">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <header class="entry-header">
+                            <h1 class="entry-title">{{ filiere.nom }}</h1>
+                        </header>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div class="single-course-wrap">
+                    <div class="course-info flex flex-wrap align-items-center">
+                        <div class="course-author flex align-items-center">
+                            {# Correction du chemin image #}
+                            <img src="{{ asset('assets/front/images/instructor.jpg') }}" alt="Instructeur">
+                            <p>Par <span>Admin SchoolPrepar</span></p>
+                        </div>
+                        
+                        <div class="course-cats">
+                            <p>Catégorie : <span>Ingénierie</span></p>
+                        </div>
+                    </div>
+
+                    <div class="single-course-cont-section">
+                        <h2>Description de la filière</h2>
+                        <p>{{ filiere.description }}</p>
+
+                        <h2>Ce que vous apprendrez</h2>
+                        <ul class="p-0 m-0 green-ticked">
+                            {# Exemple de contenu qui sera bientôt dynamique #}
+                            <li>Maîtrise des concepts fondamentaux de la filière {{ filiere.nom }}.</li>
+                            <li>Développement de compétences pratiques et théoriques.</li>
+                            <li>Préparation aux certifications professionnelles.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="sidebar">
+                    <div class="course-features">
+                        <h2>Détails</h2>
+                        <ul class="p-0 m-0">
+                            <li class="flex justify-content-between align-items-center">
+                                <span class="label">Prix :</span>
+                                <span class="value">Gratuit</span>
+                            </li>
+                            <li class="flex justify-content-between align-items-center">
+                                <span class="label">Durée :</span>
+                                <span class="value">3 Ans (Licence)</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="ads mt-4">
+                        {# Correction du chemin image publicitaire #}
+                        <img src="{{ asset('assets/front/images/ads.jpg') }}" alt="Publicité">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

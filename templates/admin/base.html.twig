@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <title>{% block title %}Material Able - Admin{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <link rel="icon" href="{{ asset('assets/admin/images/favicon.ico') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/admin/pages/waves/css/waves.min.css') }}" type="text/css" media="all">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/css/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/icon/themify-icons/themify-icons.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/icon/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/admin/css/jquery.mCustomScrollbar.css') }}">
+
+    {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+    <div class="theme-loader">
+        <div class="loader-track">
+            <div class="preloader-wrapper">
+                <div class="spinner-layer spinner-blue">
+                    <div class="circle-clipper left"><div class="circle"></div></div>
+                    <div class="gap-patch"><div class="circle"></div></div>
+                    <div class="circle-clipper right"><div class="circle"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper">
+            
+            {{ include('admin/partials/nav.html.twig') }}
+
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    
+                    {{ include('admin/partials/aside.html.twig') }}
+
+                    <div class="pcoded-content">
+                        <div class="pcoded-inner-content">
+                            <div class="main-body">
+                                <div class="page-wrapper">
+                                    {% block body %}{% endblock %}
+                                </div>
+                            </div>
+                        </div>
+                        {{ include('admin/partials/footer.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="{{ asset('assets/admin/js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/popper.js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/bootstrap/js/bootstrap.min.js') }}"></script>
+    
+    <script src="{{ asset('assets/admin/pages/waves/js/waves.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/jquery-slimscroll/jquery.slimscroll.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/pcoded.min.js') }}"></script>
+    <script src="{{ asset('assets/admin/js/vertical/vertical-layout.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/admin/js/script.js') }}"></script>
+
+    {% block javascripts %}{% endblock %}
+</body>
+</html>
+
