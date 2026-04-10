@@ -95,8 +95,9 @@ Méthode B - WAMP / XAMPP
 | Gestion des établissements | `/admin/etablissement` | CRUD complet des établissements |
 | Gestion des utilisateurs | `/admin/utilisateur` | CRUD complet des utilisateurs |
 
-## Structure des templates
+---
 
+## Structure des templates
 templates/
 ├── admin/
 │   ├── base.html.twig           # Layout principal admin
@@ -128,10 +129,6 @@ Toutes les pages héritent de `base.html.twig` qui contient :
 
 ### Entités principales
 
-## Modèle de données
-
-### Entités principales
-
 | Entité | Rôle | Relations |
 |--------|------|-----------|
 | Filiere | Filières de formation | 1:N vers User |
@@ -146,8 +143,9 @@ Toutes les pages héritent de `base.html.twig` qui contient :
 | 1:N | Filiere → User | user.filiere_id |
 | N:N | User ↔ Evenement | user_evenement |
 
-## Auteur
+---
 
+## Auteur
 
 | Champ | Information |
 |-------|-------------|
