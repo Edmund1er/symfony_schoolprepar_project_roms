@@ -83,7 +83,7 @@ Méthode B - WAMP / XAMPP
 ---
 | Page | Route | Description |
 |------|-------|-------------|
-| Accueil | `/` ou `/accueil` | Page \'accueil dynamique |
+| Accueil | `/` ou `/accueil` | Page d'accueil dynamique |
 | Liste des établissements | `/liste_etablissement` | Voir tous les établissements |
 
 ### Back-office (administration)
@@ -146,7 +146,7 @@ Toutes les pages héritent de `base.html.twig` qui contient :
 ---
 
 ## Auteur
----
+
 | Champ | Information |
 |-------|-------------|
 | Nom | ALI Pouwèdéou Romaric |
@@ -156,4 +156,3 @@ Toutes les pages héritent de `base.html.twig` qui contient :
 | Année académique | 2025-2026 |
 | UE | IT 232 - Développement Web II |
 | Encadrant | M. EDOU Dodji |
----

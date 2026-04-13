@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouvel Événement{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Nouvel Événement</h5>
+                    <p class="m-b-0">Ajouter un nouvel événement</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_evenement_index') }}">Événements</a></li>
+                    <li class="breadcrumb-item"><a href="#">Nouveau</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Formulaire d'ajout</h5>
+                        <div class="card-header-right">
+                            <a href="{{ path('app_admin_evenement_index') }}" class="btn btn-secondary btn-sm">↩️ Retour</a>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        {{ include('admin/evenement/_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

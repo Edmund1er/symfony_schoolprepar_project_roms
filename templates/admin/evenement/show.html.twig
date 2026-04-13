@@ -1,0 +1,75 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Détail Événement{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Détail Événement</h5>
+                    <p class="m-b-0">Consultation des informations</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_evenement_index') }}">Événements</a></li>
+                    <li class="breadcrumb-item"><a href="#">Détail</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>{{ evenement.titre }}</h5>
+                        <div class="card-header-right">
+                            <a href="{{ path('app_admin_evenement_edit', {'id': evenement.id}) }}" class="btn btn-warning btn-sm"> Modifier</a>
+                            <a href="{{ path('app_admin_evenement_index') }}" class="btn btn-secondary btn-sm">↩️ Retour</a>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;">Id</th>
+                                    <td>{{ evenement.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Titre</th>
+                                    <td>{{ evenement.titre }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Date</th>
+                                    <td>{{ evenement.date ? evenement.date|date('d/m/Y H:i') : '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Lieu</th>
+                                    <td>{{ evenement.lieu }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Participants</th>
+                                    <td>
+                                        {% for participant in evenement.participants %}
+                                            <span class="badge badge-info">{{ participant.nom }} {{ participant.prenom }}</span>
+                                        {% else %}
+                                            Aucun participant
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

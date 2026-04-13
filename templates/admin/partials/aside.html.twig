@@ -47,6 +47,12 @@
                     <span class="pcoded-mcaret"></span>
                 </a>
             </li>
+            <li class="{{ app.request.get('_route') == 'app_admin_evenement_index' ? 'active' : '' }}">
+                <a href="{{ path('app_admin_evenement_index') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-calendar"></i><b>E</b></span>
+                    <span class="pcoded-mtext">Gestion des événements</span>
+                </a>
+            </li>
         </ul>
         
         {# On ajoute un espace vide en bas pour être sûr que le dernier bouton ne soit pas collé au bord #}

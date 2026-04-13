@@ -1,0 +1,152 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Tableau de bord - Administration{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Tableau de bord</h5>
+                    <p class="m-b-0">Bienvenue sur l'administration de SchoolPrepar</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_admin_dashboard') }}"> <i class="fa fa-home"></i> </a>
+                    </li>
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="row">
+                    <!-- Carte Filières -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-c-purple">{{ filieres_count|default(0) }}</h4>
+                                        <h6 class="text-muted m-b-0">Filières</h6>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="fa fa-book f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-c-purple">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Gérer les formations</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <a href="{{ path('app_admin_filiere_index') }}" class="text-white">
+                                            <i class="fa fa-arrow-right f-16"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Établissements -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-c-green">{{ etablissements_count|default(0) }}</h4>
+                                        <h6 class="text-muted m-b-0">Établissements</h6>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="fa fa-university f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-c-green">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Gérer les partenaires</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <a href="{{ path('app_admin_etablissement_index') }}" class="text-white">
+                                            <i class="fa fa-arrow-right f-16"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Utilisateurs -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-c-blue">{{ utilisateurs_count|default(0) }}</h4>
+                                        <h6 class="text-muted m-b-0">Utilisateurs</h6>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="fa fa-users f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-c-blue">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Gérer les comptes</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <a href="{{ path('app_admin_utilisateur_index') }}" class="text-white">
+                                            <i class="fa fa-arrow-right f-16"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Carte Événements -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card">
+                            <div class="card-block">
+                                <div class="row align-items-center">
+                                    <div class="col-8">
+                                        <h4 class="text-c-yellow">{{ evenements_count|default(0) }}</h4>
+                                        <h6 class="text-muted m-b-0">Événements</h6>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <i class="fa fa-calendar f-28"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-c-yellow">
+                                <div class="row align-items-center">
+                                    <div class="col-9">
+                                        <p class="text-white m-b-0">Gérer les événements</p>
+                                    </div>
+                                    <div class="col-3 text-right">
+                                        <a href="{{ path('app_admin_evenement_index') }}" class="text-white">
+                                            <i class="fa fa-arrow-right f-16"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

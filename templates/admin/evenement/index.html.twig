@@ -1,0 +1,72 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Événements{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Événements</h5>
+                    <p class="m-b-0">Gestion des événements de la plateforme</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="#">Événements</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Liste des événements</h5>
+                        <a href="{{ path('app_admin_evenement_new') }}" class="btn btn-primary float-right">+ Nouvel événement</a>
+                    </div>
+                    <div class="card-block">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Titre</th>
+                                    <th>Date</th>
+                                    <th>Lieu</th>
+                                    <th>Participants</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for evenement in evenements %}
+                                <tr>
+                                    <td>{{ evenement.id }}</td>
+                                    <td>{{ evenement.titre }}</td>
+                                    <td>{{ evenement.date ? evenement.date|date('d/m/Y H:i') : '' }}</td>
+                                    <td>{{ evenement.lieu }}</td>
+                                    <td>{{ evenement.participants|length }} inscrit(s)</td>
+                                    <td>
+                                        <a href="{{ path('app_admin_evenement_show', {'id': evenement.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                                        <a href="{{ path('app_admin_evenement_edit', {'id': evenement.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">Aucun événement trouvé</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

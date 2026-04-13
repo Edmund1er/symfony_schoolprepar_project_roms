@@ -6,9 +6,11 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -33,9 +35,6 @@ class User
     #[ORM\ManyToOne(inversedBy: 'User')]
     private ?Filiere $filiere = null;
 
-    /**
-     * @var Collection<int, Evenement>
-     */
     #[ORM\ManyToMany(targetEntity: Evenement::class, mappedBy: 'participants')]
     private Collection $evenements;
 
@@ -57,7 +56,6 @@ class User
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -69,7 +67,6 @@ class User
     public function setPrenom(?string $prenom): static
     {
         $this->prenom = $prenom;
-
         return $this;
     }
 
@@ -81,7 +78,6 @@ class User
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -93,7 +89,6 @@ class User
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -105,7 +100,6 @@ class User
     public function setRole(array $role): static
     {
         $this->role = $role;
-
         return $this;
     }
 
@@ -117,13 +111,9 @@ class User
     public function setFiliere(?Filiere $filiere): static
     {
         $this->filiere = $filiere;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Evenement>
-     */
     public function getEvenements(): Collection
     {
         return $this->evenements;
@@ -135,7 +125,6 @@ class User
             $this->evenements->add($evenement);
             $evenement->addParticipant($this);
         }
-
         return $this;
     }
 
@@ -144,7 +133,24 @@ class User
         if ($this->evenements->removeElement($evenement)) {
             $evenement->removeParticipant($this);
         }
-
         return $this;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->role;
+        if (!in_array('ROLE_USER', $roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+        return $roles;
     }
 }
