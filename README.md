@@ -144,7 +144,6 @@ Encadrant	M. EDOU Dodji
 Dépôt GitHub
 
 https://github.com/Edmund1er/symfony_schoolprepar_project_roms.git
-text
 
 
 ---
