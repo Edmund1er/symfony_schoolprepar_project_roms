@@ -132,15 +132,26 @@ Relations implémentées
 Type	Entités	Table de liaison
 1:N	Filiere → User	user.filiere_id
 N:N	User ↔ Evenement	user_evenement
+
+
 Auteur
+
 Champ	Information
+
 Nom	ALI Pouwèdéou Romaric
+
 Filière	GL (Génie Logiciel) - Licence 2
+
 Semestre	4
+
 Institution	IPNet Institute of Technology
+
 Année académique	2025-2026
+
 UE	IT 232 - Développement Web II
+
 Encadrant	M. EDOU Dodji
+
 Dépôt GitHub
 
 https://github.com/Edmund1er/symfony_schoolprepar_project_roms.git
