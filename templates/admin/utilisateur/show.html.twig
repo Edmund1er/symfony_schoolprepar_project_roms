@@ -1,16 +1,5 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}User{% endblock %}
-
-{% block body %}
-    <h1>User</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>{% extends 'admin/base.html.twig' %}
-
 {% block title %}Détail Utilisateur{% endblock %}
 
 {% block body %}
@@ -27,7 +16,7 @@
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
                     <li class="breadcrumb-item"><a href="{{ path('app_admin_utilisateur_index') }}">Utilisateurs</a></li>
-                    <li class="breadcrumb-item"><a href="#">Détail</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ user.prenom }} {{ user.nom }}</a></li>
                 </ul>
             </div>
         </div>
@@ -40,45 +29,48 @@
             <div class="page-body">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Informations de {{ user.prenom }} {{ user.nom }}</h5>
+                        <h5>{{ user.prenom }} {{ user.nom }}</h5>
                         <div class="card-header-right">
-                            <a href="{{ path('app_admin_utilisateur_edit', {'id': user.id}) }}" class="btn btn-warning btn-sm">✏️ Modifier</a>
-                            <a href="{{ path('app_admin_utilisateur_index') }}" class="btn btn-secondary btn-sm">↩️ Retour</a>
+                            <a href="{{ path('app_admin_utilisateur_edit', {'id': user.id}) }}" class="btn btn-warning btn-sm">
+                                <i class="fa fa-pencil"></i> Modifier
+                            </a>
+                            <a href="{{ path('app_admin_utilisateur_index') }}" class="btn btn-secondary btn-sm">
+                                <i class="fa fa-arrow-left"></i> Retour
+                            </a>
                         </div>
                     </div>
                     <div class="card-block">
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <th style="width: 200px;">Id</th>
-                                    <td>{{ user.id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Nom</th>
-                                    <td>{{ user.nom }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Prénom</th>
-                                    <td>{{ user.prenom }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email</th>
-                                    <td>{{ user.email }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Rôle(s)</th>
-                                    <td>
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <div class="avatar-lg">
+                                    <i class="fa fa-user-circle fa-5x text-c-blue"></i>
+                                </div>
+                                <h4 class="mt-3">{{ user.prenom }} {{ user.nom }}</h4>
+                                <p class="text-muted">ID: #{{ user.id }}</p>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="info-group">
+                                    <label>Nom complet</label>
+                                    <p>{{ user.prenom }} {{ user.nom }}</p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Email</label>
+                                    <p>{{ user.email }}</p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Rôle(s)</label>
+                                    <p>
                                         {% for role in user.role %}
                                             <span class="badge badge-info">{{ role }}</span>
                                         {% endfor %}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Filière</th>
-                                    <td>{{ user.filiere ? user.filiere.nom : 'Non assigné' }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Filière</label>
+                                    <p>{{ user.filiere ? user.filiere.nom : 'Non assigné' }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
                         {{ include('admin/utilisateur/_delete_form.html.twig') }}
@@ -88,11 +80,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
-
-    <a href="{{ path('app_admin_utilisateur_index') }}">back to list</a>
-
-    <a href="{{ path('app_admin_utilisateur_edit', {'id': user.id}) }}">edit</a>
-
-    {{ include('admin/utilisateur/_delete_form.html.twig') }}
 {% endblock %}

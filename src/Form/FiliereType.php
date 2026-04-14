@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Filiere;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,6 +15,12 @@ class FiliereType extends AbstractType
         $builder
             ->add('nom')
             ->add('description')
+            ->add('image', FileType::class, [
+                'label' => 'Image de la filière (PNG, JPG)',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'accept' => 'image/*']
+            ])
         ;
     }
 

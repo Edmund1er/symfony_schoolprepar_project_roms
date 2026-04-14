@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Détail Établissement{% endblock %}
+{% block title %}Détail Établissement - {{ etablissement.nom }}{% endblock %}
 
 {% block body %}
 <div class="page-header">
@@ -8,15 +8,15 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <div class="page-header-title">
-                    <h5 class="m-b-10">Détail Établissement</h5>
-                    <p class="m-b-0">Consultation des informations</p>
+                    <h5 class="m-b-10">{{ etablissement.nom }}</h5>
+                    <p class="m-b-0">Fiche complète de l'établissement</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
                     <li class="breadcrumb-item"><a href="{{ path('app_admin_etablissement_index') }}">Établissements</a></li>
-                    <li class="breadcrumb-item"><a href="#">Détail</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ etablissement.nom }}</a></li>
                 </ul>
             </div>
         </div>
@@ -29,33 +29,45 @@
             <div class="page-body">
                 <div class="card">
                     <div class="card-header">
-                        <h5>{{ etablissement.nom }}</h5>
+                        <h5>Fiche complète : {{ etablissement.nom }}</h5>
                         <div class="card-header-right">
-                            <a href="{{ path('app_admin_etablissement_edit', {'id': etablissement.id}) }}" class="btn btn-warning btn-sm">✏️ Modifier</a>
-                            <a href="{{ path('app_admin_etablissement_index') }}" class="btn btn-secondary btn-sm">↩️ Retour</a>
+                            <a href="{{ path('app_admin_etablissement_edit', {'id': etablissement.id}) }}" class="btn btn-warning btn-sm">
+                                <i class="fa fa-pencil"></i> Modifier
+                            </a>
+                            <a href="{{ path('app_admin_etablissement_index') }}" class="btn btn-secondary btn-sm">
+                                <i class="fa fa-arrow-left"></i> Retour
+                            </a>
                         </div>
                     </div>
                     <div class="card-block">
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <th style="width: 200px;">Id</th>
-                                    <td>{{ etablissement.id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Nom</th>
-                                    <td>{{ etablissement.nom }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Adresse</th>
-                                    <td>{{ etablissement.adresse }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Email</th>
-                                    <td>{{ etablissement.email }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                {% if etablissement.image %}
+                                    <img src="{{ asset('assets/admin/images/etablissements/' ~ etablissement.image) }}" 
+                                         alt="{{ etablissement.nom }}" 
+                                         class="img-fluid" 
+                                         style="max-width: 100%; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                {% else %}
+                                    <div class="avatar-lg">
+                                        <i class="fa fa-university fa-5x text-c-green"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="info-group">
+                                    <label>Nom officiel</label>
+                                    <p>{{ etablissement.nom }}</p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Adresse</label>
+                                    <p>{{ etablissement.adresse }}</p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Email</label>
+                                    <p>{{ etablissement.email }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer">
                         {{ include('admin/etablissement/_delete_form.html.twig') }}

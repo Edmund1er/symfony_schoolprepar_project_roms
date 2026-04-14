@@ -9,14 +9,14 @@
             <div class="col-md-8">
                 <div class="page-header-title">
                     <h5 class="m-b-10">Détail Événement</h5>
-                    <p class="m-b-0">Consultation des informations</p>
+                    <p class="m-b-0">Consultation des informations d'un événement</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
                     <li class="breadcrumb-item"><a href="{{ path('app_admin_evenement_index') }}">Événements</a></li>
-                    <li class="breadcrumb-item"><a href="#">Détail</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ evenement.titre }}</a></li>
                 </ul>
             </div>
         </div>
@@ -31,41 +31,50 @@
                     <div class="card-header">
                         <h5>{{ evenement.titre }}</h5>
                         <div class="card-header-right">
-                            <a href="{{ path('app_admin_evenement_edit', {'id': evenement.id}) }}" class="btn btn-warning btn-sm"> Modifier</a>
-                            <a href="{{ path('app_admin_evenement_index') }}" class="btn btn-secondary btn-sm">↩️ Retour</a>
+                            <a href="{{ path('app_admin_evenement_edit', {'id': evenement.id}) }}" class="btn btn-warning btn-sm">
+                                <i class="fa fa-pencil"></i> Modifier
+                            </a>
+                            <a href="{{ path('app_admin_evenement_index') }}" class="btn btn-secondary btn-sm">
+                                <i class="fa fa-arrow-left"></i> Retour
+                            </a>
                         </div>
                     </div>
                     <div class="card-block">
-                        <table class="table table-bordered">
-                            <tbody>
-                                <tr>
-                                    <th style="width: 200px;">Id</th>
-                                    <td>{{ evenement.id }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Titre</th>
-                                    <td>{{ evenement.titre }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Date</th>
-                                    <td>{{ evenement.date ? evenement.date|date('d/m/Y H:i') : '' }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Lieu</th>
-                                    <td>{{ evenement.lieu }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Participants</th>
-                                    <td>
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <div class="avatar-lg">
+                                    <i class="fa fa-calendar-check-o fa-5x text-c-yellow"></i>
+                                </div>
+                                <h4 class="mt-3">{{ evenement.titre }}</h4>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="info-group">
+                                    <label>Titre</label>
+                                    <p>{{ evenement.titre }}</p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Date</label>
+                                    <p>{{ evenement.date ? evenement.date|date('d/m/Y H:i') : '' }}</p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Lieu</label>
+                                    <p>{{ evenement.lieu }}</p>
+                                </div>
+                                <div class="info-group">
+                                    <label>Participants</label>
+                                    <p>
                                         {% for participant in evenement.participants %}
                                             <span class="badge badge-info">{{ participant.nom }} {{ participant.prenom }}</span>
                                         {% else %}
                                             Aucun participant
                                         {% endfor %}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        {{ include('admin/evenement/_delete_form.html.twig') }}
                     </div>
                 </div>
             </div>

@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $role = [];
 
-    #[ORM\ManyToOne(inversedBy: 'User')]
+    #[ORM\ManyToOne(inversedBy: 'utilisateurs')]
     private ?Filiere $filiere = null;
 
     #[ORM\ManyToMany(targetEntity: Evenement::class, mappedBy: 'participants')]

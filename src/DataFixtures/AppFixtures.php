@@ -24,28 +24,29 @@ class AppFixtures extends Fixture
         // ========== 1. FILIERES ==========
         $filieres = [];
         $filiereData = [
-            ['Génie Logiciel', 'Développement de logiciels, conception, programmation avancée, gestion de projets informatiques'],
-            ['Réseaux et Systèmes', 'Administration des réseaux, sécurité informatique, virtualisation, cloud computing'],
-            ['Comptabilité', 'Comptabilité générale, comptabilité analytique, audit financier, fiscalité'],
-            ['Audit et Contrôle', 'Audit interne, contrôle de gestion, gestion des risques, conformité'],
-            ['Sciences Biologiques', 'Biologie animale, biologie végétale, génétique, écologie, physiologie'],
+            ['Génie Logiciel', 'Développement de logiciels, conception, programmation avancée, gestion de projets informatiques', 'genie-logiciel.png'],
+            ['Réseaux et Systèmes', 'Administration des réseaux, sécurité informatique, virtualisation, cloud computing', 'reseaux-systemes.png'],
+            ['Comptabilité', 'Comptabilité générale, comptabilité analytique, audit financier, fiscalité', 'comptabilite.png'],
+            ['Droit Audit et Contrôle', 'Audit interne, contrôle de gestion, gestion des risques, conformité', 'audit-controle.png'],
+            ['Sciences Biologiques', 'Biologie animale, biologie végétale, génétique, écologie, physiologie', 'sciences-biologiques.png'],
         ];
 
         foreach ($filiereData as $data) {
             $filiere = new Filiere();
             $filiere->setNom($data[0]);
             $filiere->setDescription($data[1]);
+            $filiere->setImage($data[2]);
             $manager->persist($filiere);
             $filieres[] = $filiere;
         }
 
         // ========== 2. ETABLISSEMENTS ==========
         $etablissementData = [
-            ['Université de Lomé', 'Boulevard du 13 Janvier, Lomé, Togo', 'contact@univ-lome.tg'],
-            ['Université de Kara', 'Kara, Togo', 'rectorat@univ-kara.tg'],
-            ['Université de Dapaong', 'Dapaong, Savanes, Togo', 'contact@univ-dapaong.tg'],
-            ['IPNET Institute of Technology', 'Avenue Sarakawa, Lomé, Togo', 'info@ipnet.tg'],
-            ['ESTBA', 'Lomé, Togo', 'info@estba.tg'],
+            ['Université de Lomé', 'Boulevard du 13 Janvier, Lomé, Togo', 'contact@univ-lome.tg', 'univ-lome.png'],
+            ['Université de Kara', 'Kara, Togo', 'rectorat@univ-kara.tg', 'univ-kara.png'],
+            ['ISDI', '21 BKK, rue Djavémé, derrière FUCEC Atikoumé, Togo', 'isditogo@gmail.com', 'isdi.png'],
+            ['IPNET Institute of Technology', 'Avenue Sarakawa, Lomé, Togo', 'info@ipnet.tg', 'ipnet.png'],
+            ['IAI', '46G6+54 Lomé, Togo', 'iaitogo@iai-togo.tg', 'iai.png'],
         ];
 
         foreach ($etablissementData as $data) {
@@ -53,6 +54,7 @@ class AppFixtures extends Fixture
             $etablissement->setNom($data[0]);
             $etablissement->setAdresse($data[1]);
             $etablissement->setEmail($data[2]);
+            $etablissement->setImage($data[3]);
             $manager->persist($etablissement);
         }
 

@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/admin/filiere')]
 final class AdminFiliereController extends AbstractController
@@ -23,13 +25,32 @@ final class AdminFiliereController extends AbstractController
     }
 
     #[Route('/new', name: 'app_admin_filiere_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $filiere = new Filiere();
         $form = $this->createForm(FiliereType::class, $filiere);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            // Gestion de l'upload de l'image
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                
+                try {
+                    $imageFile->move(
+                        $this->getParameter('filiere_images_directory'),
+                        $newFilename
+                    );
+                    $filiere->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
+                }
+            }
+            
             $entityManager->persist($filiere);
             $entityManager->flush();
 
@@ -51,12 +72,31 @@ final class AdminFiliereController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_admin_filiere_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Filiere $filiere, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Filiere $filiere, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(FiliereType::class, $filiere);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            // Gestion de l'upload de l'image
+            $imageFile = $form->get('image')->getData();
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                
+                try {
+                    $imageFile->move(
+                        $this->getParameter('filiere_images_directory'),
+                        $newFilename
+                    );
+                    $filiere->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
+                }
+            }
+            
             $entityManager->flush();
 
             return $this->redirectToRoute('app_admin_filiere_index', [], Response::HTTP_SEE_OTHER);

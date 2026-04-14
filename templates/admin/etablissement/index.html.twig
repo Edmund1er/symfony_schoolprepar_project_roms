@@ -8,8 +8,8 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <div class="page-header-title">
-                    <h5 class="m-b-10">Établissements</h5>
-                    <p class="m-b-0">Gestion des établissements scolaires</p>
+                    <h5 class="m-b-10">Liste des Établissements</h5>
+                    <p class="m-b-0">Gérer les établissements partenaires</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -28,39 +28,91 @@
             <div class="page-body">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Liste des établissements</h5>
-                        <a href="{{ path('app_admin_etablissement_new') }}" class="btn btn-primary float-right">+ Nouvel établissement</a>
+                        <h5>Établissements partenaires</h5>
+                        <a href="{{ path('app_admin_etablissement_new') }}" class="btn btn-primary float-right">
+                            <i class="fa fa-plus"></i> Ajouter un établissement
+                        </a>
                     </div>
                     <div class="card-block">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Nom</th>
-                                    <th>Adresse</th>
-                                    <th>Email</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for etablissement in etablissements %}
-                                <tr>
-                                    <td>{{ etablissement.id }}</td>
-                                    <td>{{ etablissement.nom }}</td>
-                                    <td>{{ etablissement.adresse }}</td>
-                                    <td>{{ etablissement.email }}</td>
-                                    <td>
-                                        <a href="{{ path('app_admin_etablissement_show', {'id': etablissement.id}) }}" class="btn btn-sm btn-info">Voir</a>
-                                        <a href="{{ path('app_admin_etablissement_edit', {'id': etablissement.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="5" class="text-center">Aucun établissement trouvé</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th style="width: 5%">#</th>
+                                        <th style="width: 10%">APERÇU</th>
+                                        <th style="width: 25%">NOM</th>
+                                        <th style="width: 30%">ADRESSE</th>
+                                        <th style="width: 30%">ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for etablissement in etablissements %}
+                                    <tr>
+                                        <td class="text-center">{{ loop.index }}</td>
+                                        <td class="text-center">
+                                            {% if etablissement.image %}
+                                                <img src="{{ asset('assets/admin/images/etablissements/' ~ etablissement.image) }}" 
+                                                     alt="{{ etablissement.nom }}" 
+                                                     width="40" height="40" 
+                                                     style="object-fit: cover; border-radius: 8px;">
+                                            {% else %}
+                                                <div class="avatar">
+                                                    <i class="fa fa-university fa-2x text-c-green"></i>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td><strong>{{ etablissement.nom }}</strong></td>
+                                        <td>{{ etablissement.adresse }}</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{{ path('app_admin_etablissement_show', {'id': etablissement.id}) }}" 
+                                                   class="btn btn-sm btn-info" title="Voir">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                <a href="{{ path('app_admin_etablissement_edit', {'id': etablissement.id}) }}" 
+                                                   class="btn btn-sm btn-warning" title="Modifier">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-danger" 
+                                                        data-toggle="modal" 
+                                                        data-target="#deleteModalEtab{{ etablissement.id }}"
+                                                        title="Supprimer">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                            
+                                            <div class="modal fade" id="deleteModalEtab{{ etablissement.id }}" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Confirmer la suppression</h5>
+                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Êtes-vous sûr de vouloir supprimer l'établissement <strong>{{ etablissement.nom }}</strong> ?</p>
+                                                            <p class="text-danger">Cette action est irréversible.</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                                            <form method="post" action="{{ path('app_admin_etablissement_delete', {'id': etablissement.id}) }}">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ etablissement.id) }}">
+                                                                <button type="submit" class="btn btn-danger">Confirmer</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">Aucun établissement trouvé</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

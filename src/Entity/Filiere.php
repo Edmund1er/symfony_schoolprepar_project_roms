@@ -22,15 +22,15 @@ class Filiere
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @var Collection<int, User>
-     */
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'filiere')]
-    private Collection $User;
+    private Collection $utilisateurs;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
 
     public function __construct()
     {
-        $this->User = new ArrayCollection();
+        $this->utilisateurs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -46,7 +46,6 @@ class Filiere
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -58,37 +57,41 @@ class Filiere
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUser(): Collection
+    public function getUtilisateurs(): Collection
     {
-        return $this->User;
+        return $this->utilisateurs;
     }
 
-    public function addUser(User $user): static
+    public function addUtilisateur(User $utilisateur): static
     {
-        if (!$this->User->contains($user)) {
-            $this->User->add($user);
-            $user->setFiliere($this);
+        if (!$this->utilisateurs->contains($utilisateur)) {
+            $this->utilisateurs->add($utilisateur);
+            $utilisateur->setFiliere($this);
         }
-
         return $this;
     }
 
-    public function removeUser(User $user): static
+    public function removeUtilisateur(User $utilisateur): static
     {
-        if ($this->User->removeElement($user)) {
-            // set the owning side to null (unless already changed)
-            if ($user->getFiliere() === $this) {
-                $user->setFiliere(null);
+        if ($this->utilisateurs->removeElement($utilisateur)) {
+            if ($utilisateur->getFiliere() === $this) {
+                $utilisateur->setFiliere(null);
             }
         }
+        return $this;
+    }
 
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
         return $this;
     }
 }
