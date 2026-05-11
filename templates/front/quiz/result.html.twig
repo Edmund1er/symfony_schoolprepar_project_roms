@@ -1,0 +1,134 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Resultat - {{ result.quiz.titre }}{% endblock %}
+
+{% block body %}
+<style>
+    .page-result {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .result-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+    .score-circle {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .score-circle span {
+        font-size: 32px;
+        font-weight: bold;
+        color: white;
+    }
+    .detail-item {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .detail-correct {
+        border-left: 4px solid #28a745;
+    }
+    .detail-incorrect {
+        border-left: 4px solid #dc3545;
+    }
+    .btn-autres-quiz {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 10px 25px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-autres-quiz:hover {
+        background: #007bff;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .btn-mes-resultats {
+        background: #91cdd6;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 10px 25px;
+        margin-left: 10px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-mes-resultats:hover {
+        background: #81bc96;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .badge-score {
+        background: #28a745;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 1rem;
+    }
+</style>
+
+<div class="page-result">
+    <div class="container">
+        <div class="result-card">
+            <div class="score-circle">
+                <span>{{ result.resultat.percentage ?? (result.score / result.totalPoints * 100)|round }}%</span>
+            </div>
+            <h3>{{ result.quiz.titre }}</h3>
+            <p class="text-muted">Complete le {{ result.dateCompletion|date('d/m/Y H:i') }}</p>
+            <div class="mt-3">
+                <span class="badge-score">Score : {{ result.score }} / {{ result.totalPoints }}</span>
+            </div>
+        </div>
+
+        <h4 class="mb-3">Detail des reponses</h4>
+
+        {% set details = result.resultat.details ?? [] %}
+        {% for detail in details %}
+            <div class="detail-item {{ detail.correcte ? 'detail-correct' : 'detail-incorrect' }}">
+                <div class="d-flex align-items-start">
+                    <div class="mr-3">
+                        {% if detail.correcte %}
+                            <i class="fa fa-check-circle text-success fa-2x"></i>
+                        {% else %}
+                            <i class="fa fa-times-circle text-danger fa-2x"></i>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <strong>Question {{ loop.index }}</strong>
+                        <p class="mb-0">{{ detail.question }}</p>
+                        {% if detail.correcte %}
+                            <small class="text-success">Bonne reponse (+{{ detail.points }} points)</small>
+                        {% else %}
+                            <small class="text-danger">Mauvaise reponse</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="text-center mt-4">
+            <a href="{{ path('quiz_index') }}" class="btn-autres-quiz">Autres quiz</a>
+            <a href="{{ path('quiz_mes_resultats') }}" class="btn-mes-resultats">Mes resultats</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

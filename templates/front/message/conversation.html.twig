@@ -1,0 +1,217 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Conversation - Messagerie{% endblock %}
+
+{% block body %}
+<style>
+    .page-conversation {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .chat-container {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    .chat-header {
+        background: linear-gradient(135deg, #28a745, #007bff);
+        color: white;
+        padding: 15px 20px;
+    }
+    .chat-body {
+        height: 450px;
+        overflow-y: auto;
+        padding: 20px;
+        background: #f8f9fa;
+    }
+    .message {
+        margin-bottom: 15px;
+        display: flex;
+    }
+    .message.sent {
+        justify-content: flex-end;
+    }
+    .message.received {
+        justify-content: flex-start;
+    }
+    .message-bubble {
+        max-width: 70%;
+        padding: 10px 15px;
+        border-radius: 18px;
+        position: relative;
+    }
+    .message.sent .message-bubble {
+        background: #007bff;
+        color: white;
+        border-bottom-right-radius: 5px;
+    }
+    .message.received .message-bubble {
+        background: white;
+        color: #333;
+        border-bottom-left-radius: 5px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .message-time {
+        font-size: 0.7rem;
+        margin-top: 5px;
+        display: block;
+        color: #aaa;
+    }
+    .message.sent .message-time {
+        text-align: right;
+        color: rgba(255,255,255,0.7);
+    }
+    .chat-footer {
+        padding: 15px 20px;
+        background: white;
+        border-top: 1px solid #eee;
+    }
+    .btn-send {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 0 30px 30px 0;
+        padding: 10px 20px;
+        transition: 0.3s;
+    }
+    .btn-send:hover {
+        background: #007bff;
+    }
+    .btn-retour {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 8px 20px;
+        margin-bottom: 20px;
+        display: inline-block;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+    .btn-retour:hover {
+        background: #138496;
+        color: white;
+    }
+    .form-control {
+        border-radius: 30px 0 0 30px;
+    }
+</style>
+
+<div class="page-conversation">
+    <div class="container">
+        <a href="{{ path('message_inbox') }}" class="btn-retour">Retour a la messagerie</a>
+
+        {% set autre = conversation.user1 == app.user ? conversation.user2 : conversation.user1 %}
+        
+        <div class="chat-container">
+            <div class="chat-header">
+                <h5 class="mb-0">Discussion avec {{ autre.nom }} {{ autre.prenom }}</h5>
+            </div>
+            
+            <div class="chat-body" id="chatBody">
+                {% for message in conversation.messages %}
+                    <div class="message {% if message.expediteur == app.user %}sent{% else %}received{% endif %}">
+                        <div class="message-bubble">
+                            {{ message.contenu }}
+                            <span class="message-time">{{ message.dateEnvoi|date('H:i') }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <div class="chat-footer">
+                <form id="messageForm" method="post">
+                    <div class="input-group">
+                        <input type="text" name="contenu" id="messageInput" class="form-control" placeholder="Votre message..." required>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn-send">Envoyer</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var conversationId = {{ conversation.id }};
+    var lastMessageCount = {{ conversation.messages|length }};
+    
+    function scrollToBottom() {
+        var chatBody = document.getElementById('chatBody');
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+    
+    scrollToBottom();
+    
+    // Envoi AJAX du message
+    document.getElementById('messageForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var input = document.getElementById('messageInput');
+        var contenu = input.value.trim();
+        
+        if (contenu === '') return;
+        
+        fetch('/message/send/' + conversationId, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'contenu=' + encodeURIComponent(contenu)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Ajouter le message au chat
+                var chatBody = document.getElementById('chatBody');
+                var messageDiv = document.createElement('div');
+                messageDiv.className = 'message sent';
+                messageDiv.innerHTML = '<div class="message-bubble">' + escapeHtml(data.message) + '<span class="message-time">' + data.time + '</span></div>';
+                chatBody.appendChild(messageDiv);
+                input.value = '';
+                scrollToBottom();
+            } else {
+                alert(data.error || 'Erreur');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Erreur lors de l\'envoi');
+        });
+    });
+    
+    // Récupération des nouveaux messages
+    function checkNewMessages() {
+        fetch('/message/check/' + conversationId + '?lastCount=' + lastMessageCount)
+        .then(response => response.json())
+        .then(data => {
+            if (data.newMessages && data.newMessages.length > 0) {
+                var chatBody = document.getElementById('chatBody');
+                var currentUser = {{ app.user.id }};
+                
+                data.newMessages.forEach(function(msg) {
+                    var messageDiv = document.createElement('div');
+                    messageDiv.className = 'message ' + (msg.expediteurId == currentUser ? 'sent' : 'received');
+                    messageDiv.innerHTML = '<div class="message-bubble">' + escapeHtml(msg.contenu) + '<span class="message-time">' + msg.time + '</span></div>';
+                    chatBody.appendChild(messageDiv);
+                });
+                lastMessageCount = data.newCount;
+                scrollToBottom();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+    
+    // Vérifier les nouveaux messages toutes les 3 secondes
+    setInterval(checkNewMessages, 3000);
+</script>
+{% endblock %}

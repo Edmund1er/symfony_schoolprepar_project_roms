@@ -1,98 +1,242 @@
 {% extends 'front/base.html.twig' %}
 
 {% block title %}Filières - SchoolPrepar{% endblock %}
-{% block body_class %}courses-page{% endblock %}
 
 {% block body %}
-    <div class="page-header-overlay">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <header class="entry-header">
-                        <h1>Nos Filières</h1>
-                    </header>
-                </div>
-            </div>
-        </div>
-    </div>
+<style>
+    .page-filieres {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    
+    .card-filiere {
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .card-filiere:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    
+    .card-filiere .card-body {
+        padding: 25px;
+        text-align: center;
+    }
+    
+    .card-filiere img {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+    
+    .card-filiere .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+    
+    .card-filiere .card-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .load-more-btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 12px 40px;
+        margin: 30px 0;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    
+    .load-more-btn:hover {
+        background: #28a745;
+    }
+    
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .popup-content {
+        background: white;
+        width: 700px;
+        max-width: 90%;
+        border-radius: 20px;
+        overflow: hidden;
+        animation: popupFadeIn 0.3s ease;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    @keyframes popupFadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    
+    .popup-header {
+        background: linear-gradient(135deg, #007bff, #28a745);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .popup-header h3 { margin: 0; font-size: 1.2rem; }
+    .popup-close { background: none; border: none; color: white; font-size: 28px; cursor: pointer; }
+    .popup-close:hover { opacity: 0.8; }
+    
+    .popup-body { padding: 25px; }
+    
+    .popup-row { display: flex; gap: 25px; flex-wrap: wrap; }
+    .popup-image { flex: 0 0 250px; text-align: center; }
+    .popup-image img { width: 250px; height: 250px; object-fit: cover; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .popup-info { flex: 1; }
+    
+    .popup-info table { width: 100%; border-collapse: collapse; }
+    .popup-info table th, .popup-info table td { padding: 12px; border: 1px solid #dee2e6; text-align: left; }
+    .popup-info table th { background: #f8f9fa; width: 35%; }
+    
+    .popup-footer { padding: 15px 20px; text-align: center; border-top: 1px solid #eee; }
+    .popup-footer button { background: #6c757d; color: white; border: none; border-radius: 30px; padding: 8px 25px; cursor: pointer; }
+    .popup-footer button:hover { background: #5a6268; }
+    
+    @media (max-width: 600px) { .popup-row { flex-direction: column; } .popup-image { flex: 0 0 auto; } }
+</style>
 
+<div class="page-filieres">
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="breadcrumbs">
-                    <ul class="flex flex-wrap align-items-center p-0 m-0">
-                        {# Correction : app_home au lieu de home #}
-                        <li><a href="{{ path('app_home') }}"><i class="fa fa-home"></i> Accueil</a></li>
-                        <li>Filières</li>
-                    </ul>
+        <h2 class="section-title"><i class="fa fa-graduation-cap"></i> Nos Filières</h2>
+
+        <div class="row" id="filiere-container">
+            {% for filiere in filieres %}
+                <div class="col-md-3 mb-4">
+                    <div class="card-filiere" onclick="openPopup(
+                        '{{ filiere.nom|e('js') }}',
+                        '{{ filiere.description|e('js') }}',
+                        '{{ filiere.image|e('js') }}'
+                    )">
+                        <div class="card-body">
+                            {% if filiere.image %}
+                                <img src="{{ asset('assets/admin/images/filieres/' ~ filiere.image) }}" alt="{{ filiere.nom }}">
+                            {% else %}
+                                <i class="fa fa-graduation-cap fa-4x text-primary" style="font-size: 60px; display: block; margin: 0 auto 15px;"></i>
+                            {% endif %}
+                            <h5 class="card-title">{{ filiere.nom }}</h5>
+                            <p class="card-text">{{ filiere.description|slice(0, 60) }}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            {% else %}
+                <div class="col-12"><div class="alert alert-info text-center">Aucune filière disponible.</div></div>
+            {% endfor %}
         </div>
 
-        <div class="row">
-            <div class="col-12 col-lg-8">
-                <div class="featured-courses courses-wrap">
-                    <div class="row mx-m-25">
-                        
-                        {# Cours 1 #}
-                        <div class="col-12 col-md-6 px-25">
-                            <div class="course-content">
-                                <figure class="course-thumbnail">
-                                    {# Chemin corrigé : assets/front/images/ #}
-                                    <a href="#"><img src="{{ asset('assets/front/images/1.jpg') }}" alt="Android Course"></a>
-                                </figure>
-                                <div class="course-content-wrap">
-                                    <header class="entry-header">
-                                        <h2 class="entry-title"><a href="#">The Complete Android Developer Course</a></h2>
-                                    </header>
-                                    <footer class="entry-footer flex justify-content-between align-items-center">
-                                        <div class="course-cost">$45</div>
-                                    </footer>
-                                </div>
-                            </div>
-                        </div>
-
-                        {# Cours 2 #}
-                        <div class="col-12 col-md-6 px-25">
-                            <div class="course-content">
-                                <figure class="course-thumbnail">
-                                    {# Chemin corrigé : assets/front/images/ #}
-                                    <a href="#"><img src="{{ asset('assets/front/images/2.jpg') }}" alt="Drawing Course"></a>
-                                </figure>
-                                <div class="course-content-wrap">
-                                    <header class="entry-header">
-                                        <h2 class="entry-title"><a href="#">The Ultimate Drawing Course</a></h2>
-                                    </header>
-                                    <footer class="entry-footer flex justify-content-between align-items-center">
-                                        <div class="course-cost"><span class="free-cost">Free</span></div>
-                                    </footer>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-4">
-                <div class="sidebar">
-                    <div class="latest-courses">
-                        <h2>Dernières Filières</h2>
-                        <ul class="p-0 m-0">
-                            <li class="flex flex-wrap justify-content-between align-items-center">
-                                {# Chemin corrigé : assets/front/images/ #}
-                                <img src="{{ asset('assets/front/images/t-1.jpg') }}" alt="Finance">
-                                <div class="content-wrap">
-                                    <h3><a href="#">Financial Analyst Training</a></h3>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="ads">
-                        {# Chemin corrigé : assets/front/images/ #}
-                        <img src="{{ asset('assets/front/images/ads.jpg') }}" alt="Publicité">
-                    </div>
-                </div>
-            </div>
+        <div class="text-center" id="load-more-section" {% if filieres|length >= total %}style="display: none;"{% endif %}>
+            <button class="load-more-btn" id="load-more">Charger plus</button>
         </div>
     </div>
+</div>
+
+<div id="popup" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3><i class="fa fa-graduation-cap"></i> Détail filière</h3>
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+        </div>
+        <div class="popup-body">
+            <div class="popup-row">
+                <div class="popup-image"><img id="popupImage" src="" alt=""></div>
+                <div class="popup-info">
+                    <table>
+                        <tr><th>Nom</th><td id="popupNom"></td></tr>
+                        <tr><th>Description</th><td id="popupDescription"></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer"><button onclick="closePopup()">Fermer</button></div>
+    </div>
+</div>
+
+<script>
+    let currentCount = {{ filieres|length }};
+    let totalItems = {{ total|default(filieres|length) }};
+    let isLoading = false;
+
+    function openPopup(nom, description, image) {
+        document.getElementById('popupNom').innerHTML = nom;
+        document.getElementById('popupDescription').innerHTML = description;
+        
+        var imgElement = document.getElementById('popupImage');
+        if (image && image !== 'null' && image !== '') {
+            imgElement.src = '/assets/admin/images/filieres/' + image;
+            imgElement.style.display = 'block';
+        } else {
+            imgElement.style.display = 'none';
+        }
+        document.getElementById('popup').style.display = 'flex';
+    }
+
+    function closePopup() { document.getElementById('popup').style.display = 'none'; }
+
+    document.getElementById('popup').addEventListener('click', function(e) { if (e.target === this) closePopup(); });
+
+    document.getElementById('load-more')?.addEventListener('click', function() {
+        if (isLoading) return;
+        isLoading = true;
+        fetch('{{ path('filiere_load_more') }}?offset=' + currentCount)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('filiere-container');
+                data.items.forEach(item => {
+                    const hasImage = item.image && item.image !== 'null' && item.image !== '';
+                    const html = `
+                        <div class="col-md-3 mb-4">
+                            <div class="card-filiere" onclick="openPopup('${item.nom.replace(/'/g, "\\'")}', '${item.description.replace(/'/g, "\\'")}', '${item.image || ''}')">
+                                <div class="card-body">
+                                    ${hasImage ? `<img src="/assets/admin/images/filieres/${item.image}" alt="${item.nom}">` : '<i class="fa fa-graduation-cap fa-4x text-primary" style="font-size: 60px; display: block; margin: 0 auto 15px;"></i>'}
+                                    <h5 class="card-title">${item.nom}</h5>
+                                    <p class="card-text">${item.description.substring(0, 60)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', html);
+                });
+                currentCount += data.items.length;
+                if (currentCount >= totalItems) document.getElementById('load-more-section').style.display = 'none';
+                isLoading = false;
+            }).catch(error => { console.error(error); isLoading = false; });
+    });
+</script>
 {% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Inscription - SchoolPrepar{% endblock %}
+
+{% block body %}
+<div class="container mt-5 pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm" style="border-radius: 20px;">
+                <div class="card-header bg-primary text-white text-center" style="border-radius: 20px 20px 0 0;">
+                    <h3 class="mb-0">Inscription</h3>
+                </div>
+                <div class="card-body p-4">
+                    {{ form_start(form) }}
+                    
+                    <div class="mb-3">
+                        {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.nom) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.prenom) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.plainPassword.first, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.plainPassword.first) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.plainPassword.second, 'Confirmer le mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                        {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+                        {{ form_errors(form.plainPassword.second) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mt-3" style="border-radius: 30px;">
+                        S'inscrire
+                    </button>
+                    {{ form_end(form) }}
+                    
+                    <hr>
+                    <p class="text-center mb-0">
+                        Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

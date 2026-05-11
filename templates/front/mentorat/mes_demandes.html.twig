@@ -1,0 +1,134 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Mes demandes de mentorat - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-mes-demandes {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .demande-card {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: 0.3s;
+    }
+    .demande-card:hover {
+        transform: translateY(-3px);
+    }
+    .badge-en-attente {
+        background: #ffc107;
+        color: #333;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+    .badge-accepte {
+        background: #28a745;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+    .badge-refuse {
+        background: #dc3545;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+    .btn-contacter {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 5px 15px;
+        font-size: 0.8rem;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-contacter:hover {
+        background: #138496;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .btn-retour {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 8px 20px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-retour:hover {
+        background: #007bff;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+
+<div class="page-mes-demandes">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Mes demandes de mentorat</h2>
+            <a href="{{ path('mentorat_index') }}" class="btn-retour">Trouver un mentor</a>
+        </div>
+
+        {% if demandes|length > 0 %}
+            <div class="mt-4">
+                {% for demande in demandes %}
+                    <div class="demande-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <strong>{{ demande.mentor.nom }} {{ demande.mentor.prenom }}</strong>
+                                {% if demande.mentor.specialite %}
+                                    <br><small class="text-muted">{{ demande.mentor.specialite }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">{{ demande.demandeLe|date('d/m/Y H:i') }}</small>
+                            </div>
+                            <div class="col-md-2">
+                                {% if demande.statut == 'en_attente' %}
+                                    <span class="badge-en-attente">En attente</span>
+                                {% elseif demande.statut == 'accepte' %}
+                                    <span class="badge-accepte">Accepte</span>
+                                {% elseif demande.statut == 'refuse' %}
+                                    <span class="badge-refuse">Refuse</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 text-right">
+                                {% if demande.statut == 'accepte' %}
+                                    <a href="{{ path('message_new', {'id': demande.mentor.id}) }}" class="btn-contacter">
+                                        <i class="fa fa-comment"></i> Contacter
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Message :</small>
+                            <p class="mb-0">{{ demande.message }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center mt-4">
+                Vous n'avez envoye aucune demande de mentorat.
+                <br><br>
+                <a href="{{ path('mentorat_index') }}" class="btn-retour">Trouver un mentor</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

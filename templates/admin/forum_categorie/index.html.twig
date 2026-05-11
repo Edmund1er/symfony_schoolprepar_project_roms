@@ -1,0 +1,175 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Catégories du forum{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Catégories du forum</h5>
+                    <p class="m-b-0">Gérer les catégories du forum communautaire</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="#">Forum</a></li>
+                    <li class="breadcrumb-item"><a href="#">Catégories</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Liste des catégories</h5>
+                        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">
+                            <i class="fa fa-plus"></i> Nouvelle catégorie
+                        </button>
+                    </div>
+                    <div class="card-block">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nom</th>
+                                        <th>Description</th>
+                                        <th>Ordre</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% set offset = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() %}
+                                {% for categorie in pagination %}
+                                    <tr>
+                                        <td>{{ offset + loop.index }}</td>
+                                        <td><strong>{{ categorie.nom }}</strong></td>
+                                        <td>{{ categorie.description|slice(0, 80) }}{% if categorie.description|length > 80 %}...{% endif %}</td>
+                                        <td><span class="badge badge-secondary">{{ categorie.ordre }}</span></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-outline-warning" data-toggle="modal" data-target="#editModal{{ categorie.id }}">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ categorie.id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <td><td colspan="5" class="text-center">Aucune catégorie</td></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Affichage de {{ pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1 }} à {{ min(pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage(), pagination.getTotalItemCount()) }} sur {{ pagination.getTotalItemCount() }} catégories</small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AJOUT -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_forum_categorie_new') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvelle catégorie</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="nom" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ordre</label>
+                        <input type="number" name="ordre" class="form-control" value="0">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS EDITION & SUPPRESSION -->
+{% for categorie in pagination %}
+<div class="modal fade" id="editModal{{ categorie.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_forum_categorie_edit', {'id': categorie.id}) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier {{ categorie.nom }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="nom" class="form-control" value="{{ categorie.nom }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="2">{{ categorie.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ordre</label>
+                        <input type="number" name="ordre" class="form-control" value="{{ categorie.ordre }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal{{ categorie.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_forum_categorie_delete', {'id': categorie.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorie.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Supprimer la catégorie <strong>{{ categorie.nom }}</strong> ?</p>
+                    <p class="text-danger">Action irréversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

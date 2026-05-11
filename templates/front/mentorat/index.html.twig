@@ -1,0 +1,368 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Nos mentors - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-mentors {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .card-mentor {
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    .card-mentor:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    .card-mentor .card-body {
+        padding: 25px;
+        text-align: center;
+    }
+    .avatar-mentor {
+        width: 80px;
+        height: 80px;
+        background: #e9ecef;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+    }
+    .avatar-mentor i {
+        font-size: 40px;
+        color: #007bff;
+    }
+    .rating {
+        margin-top: 10px;
+    }
+    .rating .fa-star, .rating .fa-star-o {
+        font-size: 14px;
+    }
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #333;
+        font-weight: 500;
+    }
+    .btn-demander {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 8px 15px;
+        width: 100%;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    .btn-demander:hover {
+        background: #007bff;
+        transform: translateY(-2px);
+    }
+    .btn-voir-profil {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 5px 12px;
+        font-size: 0.7rem;
+        margin-top: 10px;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    .btn-voir-profil:hover {
+        background: #138496;
+        transform: translateY(-2px);
+    }
+    .badge-specialite {
+        background: #17a2b8;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        display: inline-block;
+        margin-top: 5px;
+    }
+    
+    /* POPUP STYLE */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+    .popup-content {
+        background: white;
+        width: 550px;
+        max-width: 90%;
+        border-radius: 20px;
+        overflow: hidden;
+        animation: popupFadeIn 0.3s ease;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    @keyframes popupFadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .popup-header {
+        background: linear-gradient(135deg, #28a745, #007bff);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .popup-header h3 { margin: 0; font-size: 1.2rem; }
+    .popup-close { background: none; border: none; color: white; font-size: 28px; cursor: pointer; }
+    .popup-close:hover { opacity: 0.8; }
+    .popup-body { padding: 25px; max-height: 500px; overflow-y: auto; }
+    .popup-info table { width: 100%; border-collapse: collapse; }
+    .popup-info table th, .popup-info table td { padding: 10px; border: 1px solid #dee2e6; text-align: left; vertical-align: top; }
+    .popup-info table th { background: #f8f9fa; width: 35%; }
+    .popup-footer { padding: 15px 20px; text-align: center; border-top: 1px solid #eee; }
+    .popup-footer button { background: #6c757d; color: white; border: none; border-radius: 30px; padding: 8px 25px; cursor: pointer; margin: 0 5px; transition: 0.3s; }
+    .popup-footer button.btn-primary { background: #28a745; }
+    .popup-footer button.btn-primary:hover { background: #007bff; }
+    .popup-footer button:hover { transform: translateY(-2px); }
+    .avatar-popup {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .avatar-popup i {
+        font-size: 80px;
+        color: #007bff;
+        background: #e9ecef;
+        padding: 20px;
+        border-radius: 50%;
+    }
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-family: inherit;
+    }
+</style>
+
+<div class="page-mentors">
+    <div class="container">
+        <h2 class="section-title">Nos mentors</h2>
+
+        <div class="row">
+            {% for mentor in mentors %}
+                <div class="col-md-3 mb-4">
+                    <div class="card-mentor">
+                        <div class="card-body text-center">
+                            <div class="avatar-mentor">
+                                <i class="fa fa-user-circle"></i>
+                            </div>
+                            <h5>{{ mentor.nom }} {{ mentor.prenom }}</h5>
+                            {% if mentor.specialite %}
+                                <span class="badge-specialite">{{ mentor.specialite }}</span>
+                            {% endif %}
+                            {% if mentor.experience %}
+                                <p class="text-muted small mt-2">{{ mentor.experience }} ans d'experience</p>
+                            {% endif %}
+                            
+                            <div class="rating">
+                                {% set note = mentor.noteMoyenne|default(0) %}
+                                {% for i in 1..5 %}
+                                    {% if i <= note %}
+                                        <i class="fa fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="fa fa-star-o text-muted"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-muted ml-1">({{ mentor.nbAvis|default(0) }} avis)</span>
+                            </div>
+                            
+                            <button class="btn-voir-profil" 
+                                    data-id="{{ mentor.id }}"
+                                    data-nom="{{ mentor.nom }}"
+                                    data-prenom="{{ mentor.prenom }}"
+                                    data-email="{{ mentor.email }}"
+                                    data-specialite="{{ mentor.specialite }}"
+                                    data-experience="{{ mentor.experience }}"
+                                    data-biographie="{{ mentor.biographie }}"
+                                    data-competences="{{ mentor.competences }}"
+                                    data-note="{{ mentor.noteMoyenne|default(0) }}"
+                                    data-nbavis="{{ mentor.nbAvis|default(0) }}">
+                                Voir le profil
+                            </button>
+                        </div>
+                        
+                        {% if app.user and 'ROLE_ELEVE' in app.user.role %}
+                            <div class="card-footer bg-transparent">
+                                <button class="btn-demander" 
+                                        data-id="{{ mentor.id }}"
+                                        data-nom="{{ mentor.nom }}"
+                                        data-prenom="{{ mentor.prenom }}">
+                                    Demander un mentorat
+                                </button>
+                            </div>
+                        {% elseif not app.user %}
+                            <div class="card-footer bg-transparent">
+                                <a href="{{ path('app_login') }}" class="btn-demander" style="display: block; text-align: center; text-decoration: none;">Connectez-vous</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">Aucun mentor disponible pour le moment.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- POPUP INFO MENTOR -->
+<div id="popupMentorInfo" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3>Profil du mentor</h3>
+            <button class="popup-close" onclick="closePopupMentorInfo()">&times;</button>
+        </div>
+        <div class="popup-body">
+            <div class="avatar-popup">
+                <i class="fa fa-user-circle"></i>
+            </div>
+            <div class="popup-info">
+                <div class="info-row"><strong>Nom complet :</strong> <span id="infoNom">-</span></div>
+                <div class="info-row"><strong>Email :</strong> <span id="infoEmail">-</span></div>
+                <div class="info-row"><strong>Specialite :</strong> <span id="infoSpecialite">-</span></div>
+                <div class="info-row"><strong>Experience :</strong> <span id="infoExperience">-</span></div>
+                <div class="info-row"><strong>Biographie :</strong> <span id="infoBiographie">-</span></div>
+                <div class="info-row"><strong>Competences :</strong> <span id="infoCompetences">-</span></div>
+                <div class="info-row"><strong>Note :</strong> <span id="infoNote">-</span></div>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button onclick="closePopupMentorInfo()">Fermer</button>
+            <button id="sendMessageBtn" class="btn-primary" style="display: none;">Envoyer un message</button>
+        </div>
+    </div>
+</div>
+
+<!-- POPUP DEMANDE MENTORAT -->
+<div id="popupDemandeMentorat" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3>Demander un mentorat</h3>
+            <button class="popup-close" onclick="closeDemandePopup()">&times;</button>
+        </div>
+        <form method="post" id="mentoratForm">
+            <div class="popup-body">
+                <p id="demandeMentorText"></p>
+                <div class="form-group">
+                    <label>Votre message</label>
+                    <textarea name="message" class="form-control" rows="4" placeholder="Expliquez pourquoi vous souhaitez etre accompagne..." required></textarea>
+                </div>
+            </div>
+            <div class="popup-footer">
+                <button type="button" class="btn-secondary" onclick="closeDemandePopup()">Annuler</button>
+                <button type="submit" class="btn-primary">Envoyer la demande</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let currentMentorId = null;
+    let currentMentorNom = '';
+    let currentMentorPrenom = '';
+    
+    // Ouvrir popup info mentor
+    document.querySelectorAll('.btn-voir-profil').forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentMentorId = parseInt(this.dataset.id);
+            currentMentorNom = this.dataset.nom;
+            currentMentorPrenom = this.dataset.prenom;
+            
+            document.getElementById('infoNom').innerHTML = this.dataset.nom + ' ' + this.dataset.prenom;
+            document.getElementById('infoEmail').innerHTML = this.dataset.email;
+            document.getElementById('infoSpecialite').innerHTML = this.dataset.specialite || 'Non specifie';
+            document.getElementById('infoExperience').innerHTML = this.dataset.experience ? this.dataset.experience + ' ans' : 'Non renseigne';
+            document.getElementById('infoBiographie').innerHTML = this.dataset.biographie || 'Aucune biographie';
+            document.getElementById('infoCompetences').innerHTML = this.dataset.competences || 'Aucune competence renseignee';
+            
+            let note = parseFloat(this.dataset.note);
+            let nbAvis = parseInt(this.dataset.nbavis);
+            let noteHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= note) {
+                    noteHtml += '<i class="fa fa-star text-warning"></i>';
+                } else {
+                    noteHtml += '<i class="fa fa-star-o text-muted"></i>';
+                }
+            }
+            noteHtml += ' (' + nbAvis + ' avis)';
+            document.getElementById('infoNote').innerHTML = noteHtml;
+            
+            // Verifier si le message est autorise (demande acceptee)
+            fetch('/mentorat/verifier-relation/' + currentMentorId)
+                .then(response => response.json())
+                .then(data => {
+                    let sendBtn = document.getElementById('sendMessageBtn');
+                    if (data.peutEnvoyerMessage) {
+                        sendBtn.style.display = 'inline-block';
+                    } else {
+                        sendBtn.style.display = 'none';
+                    }
+                });
+            
+            document.getElementById('popupMentorInfo').style.display = 'flex';
+        });
+    });
+    
+    // Bouton envoyer un message
+    document.getElementById('sendMessageBtn').addEventListener('click', function() {
+        if (currentMentorId) {
+            window.location.href = '/message/nouveau/' + currentMentorId;
+        }
+    });
+    
+    // Ouvrir popup demande mentorat
+    document.querySelectorAll('.btn-demander').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let mentorId = this.dataset.id;
+            let nom = this.dataset.nom;
+            let prenom = this.dataset.prenom;
+            
+            document.getElementById('demandeMentorText').innerHTML = 'Envoyer une demande a <strong>' + nom + ' ' + prenom + '</strong>';
+            document.getElementById('mentoratForm').action = '/mentorat/demander/' + mentorId;
+            document.getElementById('popupDemandeMentorat').style.display = 'flex';
+        });
+    });
+    
+    function closePopupMentorInfo() {
+        document.getElementById('popupMentorInfo').style.display = 'none';
+    }
+    
+    function closeDemandePopup() {
+        document.getElementById('popupDemandeMentorat').style.display = 'none';
+    }
+    
+    document.getElementById('popupMentorInfo').addEventListener('click', function(e) {
+        if (e.target === this) closePopupMentorInfo();
+    });
+    
+    document.getElementById('popupDemandeMentorat').addEventListener('click', function(e) {
+        if (e.target === this) closeDemandePopup();
+    });
+</script>
+{% endblock %}

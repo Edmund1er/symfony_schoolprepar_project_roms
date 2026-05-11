@@ -1,0 +1,123 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Mes inscriptions - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-inscriptions {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .card-inscription {
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid #28a745;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    .card-inscription .card-body {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .card-inscription .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #28a745;
+    }
+    .card-inscription .card-text {
+        flex-grow: 1;
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    .card-inscription .card-text i {
+        width: 25px;
+        color: #19c880;
+    }
+    .badge-success-custom {
+        background: #28a745;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+    }
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #333;
+        font-weight: 500;
+    }
+    .btn-decouvrir {
+        background: #b1f7c1;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 10px 25px;
+        font-size: 0.9rem;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-decouvrir:hover {
+        background: #3787dc;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .alert-info {
+        border-radius: 20px;
+        background: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+    }
+    a {
+        text-decoration: none !important;
+    }
+    a:hover {
+        text-decoration: none !important;
+    }
+</style>
+
+<div class="page-inscriptions">
+    <div class="container">
+        <h2 class="section-title">Mes inscriptions</h2>
+
+        <div class="row">
+            {% if inscriptions|length > 0 %}
+                {% for evenement in inscriptions %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card-inscription">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ evenement.titre }}</h5>
+                                <p class="card-text">
+                                    <i class="fa fa-calendar"></i> {{ evenement.date|date('d/m/Y H:i') }}<br>
+                                    <i class="fa fa-map-marker"></i> {{ evenement.lieu }}
+                                </p>
+                                <div class="mt-auto">
+                                    <span class="badge-success-custom">Inscrit</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        Vous n'etes inscrit a aucun evenement.
+                        <br><br>
+                        <a href="{{ path('evenement_index') }}" class="btn-decouvrir">Decouvrir les evenements</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

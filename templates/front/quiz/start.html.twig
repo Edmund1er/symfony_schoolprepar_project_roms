@@ -1,0 +1,139 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}{{ quiz.titre }} - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-quiz-start {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .quiz-header {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    .question-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: 0.3s;
+    }
+    .question-card:hover {
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    .question-number {
+        background: #007bff;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+    .form-check-input:checked + .form-check-label {
+        color: #28a745;
+        font-weight: 500;
+    }
+    .btn-valider {
+        background: #a3e5b2;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 12px 40px;
+        font-weight: 600;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    .btn-valider:hover {
+        background: #007bff;
+        transform: scale(1.02);
+    }
+    .btn-annuler-quiz {
+        background: #9ddae3;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 12px 30px;
+        margin-left: 15px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-annuler-quiz:hover {
+        background: #ec2121;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .btn-voir-resultat {
+        background: #bbf3c8;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 8px 20px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-voir-resultat:hover {
+        background: #007bff;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+
+<div class="page-quiz-start">
+    <div class="container">
+        <div class="quiz-header text-center">
+            <h2>{{ quiz.titre }}</h2>
+            <p class="text-muted">{{ quiz.description }}</p>
+            <div class="mt-2">
+                <span class="badge badge-secondary">{{ quiz.duree ? quiz.duree ~ ' min' : 'Illimite' }}</span>
+                <span class="badge badge-secondary ml-2">{{ quiz.questions|length }} questions</span>
+            </div>
+        </div>
+
+        {% if existingResult %}
+            <div class="alert alert-info text-center">
+                Vous avez deja complete ce quiz.
+                <a href="{{ path('quiz_result', {'id': existingResult.id}) }}" class="btn-voir-resultat ml-3">Voir mon resultat</a>
+            </div>
+        {% else %}
+            <form method="post" action="{{ path('quiz_submit', {'id': quiz.id}) }}">
+                {% for question in quiz.questions %}
+                    <div class="question-card">
+                        <div class="question-number">{{ loop.index }}</div>
+                        <h5>{{ question.texte }}</h5>
+                        <div class="mt-3">
+                            {% for reponse in question.reponses %}
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" 
+                                           name="question_{{ question.id }}" 
+                                           id="q{{ question.id }}_{{ reponse.id }}" 
+                                           value="{{ reponse.id }}" required>
+                                    <label class="form-check-label" for="q{{ question.id }}_{{ reponse.id }}">
+                                        {{ reponse.texte }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn-valider">Valider mes reponses</button>
+                    <a href="{{ path('quiz_index') }}" class="btn-annuler-quiz">Annuler</a>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

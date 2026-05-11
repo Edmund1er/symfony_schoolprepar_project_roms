@@ -1,0 +1,146 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Demandes recues - Mentorat{% endblock %}
+
+{% block body %}
+<style>
+    .page-requetes {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .requete-card {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        transition: 0.3s;
+    }
+    .requete-card:hover {
+        transform: translateY(-3px);
+    }
+    .badge-en-attente {
+        background: #ffc107;
+        color: #333;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+    .badge-accepte {
+        background: #28a745;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+    .badge-refuse {
+        background: #dc3545;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        display: inline-block;
+    }
+    .btn-accepter {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 5px 15px;
+        margin: 0 5px;
+        transition: 0.3s;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-accepter:hover {
+        background: #218838;
+        transform: translateY(-2px);
+    }
+    .btn-refuser {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 5px 15px;
+        margin: 0 5px;
+        transition: 0.3s;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-refuser:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+    }
+    .btn-contacter {
+        background: #17a2b8;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 5px 15px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-contacter:hover {
+        background: #138496;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+
+<div class="page-requetes">
+    <div class="container">
+        <h2>Demandes de mentorat recues</h2>
+
+        {% if requetes|length > 0 %}
+            <div class="mt-4">
+                {% for requete in requetes %}
+                    <div class="requete-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <strong>{{ requete.eleve.nom }} {{ requete.eleve.prenom }}</strong>
+                                {% if requete.eleve.filiere %}
+                                    <br><small class="text-muted">{{ requete.eleve.filiere.nom }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">{{ requete.demandeLe|date('d/m/Y H:i') }}</small>
+                            </div>
+                            <div class="col-md-2">
+                                {% if requete.statut == 'en_attente' %}
+                                    <span class="badge-en-attente">En attente</span>
+                                {% elseif requete.statut == 'accepte' %}
+                                    <span class="badge-accepte">Accepte</span>
+                                {% elseif requete.statut == 'refuse' %}
+                                    <span class="badge-refuse">Refuse</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 text-right">
+                                {% if requete.statut == 'en_attente' %}
+                                    <a href="{{ path('mentorat_repondre', {'id': requete.id, 'statut': 'accepte'}) }}" class="btn-accepter" onclick="return confirm('Accepter cette demande ?')">Accepter</a>
+                                    <a href="{{ path('mentorat_repondre', {'id': requete.id, 'statut': 'refuse'}) }}" class="btn-refuser" onclick="return confirm('Refuser cette demande ?')">Refuser</a>
+                                {% elseif requete.statut == 'accepte' %}
+                                    <a href="{{ path('message_nouveau', {'id': requete.eleve.id}) }}" class="btn-contacter">Contacter</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">Message :</small>
+                            <p class="mb-0">{{ requete.message }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center mt-4">
+                Aucune demande de mentorat recue.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

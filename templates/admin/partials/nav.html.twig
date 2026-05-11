@@ -1,4 +1,3 @@
-{# templates/admin/partials/nav.html.twig #}
 <nav class="navbar header-navbar pcoded-header">
     <div class="navbar-wrapper">
         <div class="navbar-logo">
@@ -39,18 +38,15 @@
                 <li class="user-profile header-notification">
                     <a href="#!" class="waves-effect waves-light">
                         <img src="{{ asset('assets/admin/images/avatar-4.jpg') }}" class="img-radius" alt="User-Profile-Image">
-                        <span>Admin Romaric</span>
+                        <span>{% if app.user %}{{ app.user.nom }} {{ app.user.prenom }}{% else %}Admin{% endif %}</span>
                         <i class="ti-angle-down"></i>
                     </a>
                     <ul class="show-notification profile-notification">
                         <li class="waves-effect waves-light">
-                            <a href="#!"><i class="ti-user"></i> Profil</a>
+                            <a href="#!"><i class="ti-user"></i> Mon profil</a>
                         </li>
                         <li class="waves-effect waves-light">
-                            <a href="{{ path('app_home') }}"><i class="ti-layout-sidebar-left"></i> Retour au site</a>
-                        </li>
-                        <li class="waves-effect waves-light">
-                            <a href="#"><i class="ti-layout-sidebar-left"></i> Déconnexion</a>
+                            <a href="{{ path('app_logout') }}"><i class="ti-layout-sidebar-left"></i> Déconnexion</a>
                         </li>
                     </ul>
                 </li>

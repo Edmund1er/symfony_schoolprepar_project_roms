@@ -1,0 +1,135 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Mes resultats - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-mes-resultats {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .table-custom {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    .table-custom thead th {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 15px;
+    }
+    .progress {
+        height: 8px;
+        border-radius: 10px;
+    }
+    .btn-voir-detail {
+        background: #a5ddb2;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 6px 18px;
+        font-size: 0.8rem;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-voir-detail:hover {
+        background: #007bff;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .btn-retour-quiz {
+        background: #90c1c8;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 8px 25px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-retour-quiz:hover {
+        background: #e95252;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .btn-decouvrir {
+        background: #95d7a4;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 10px 25px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-decouvrir:hover {
+        background: #007bff;
+        transform: translateY(-2px);
+        color: white;
+    }
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #333;
+        font-weight: 500;
+    }
+</style>
+
+<div class="page-mes-resultats">
+    <div class="container">
+        <h2 class="section-title">Mes resultats aux quiz</h2>
+
+        {% if results|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-custom">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Quiz</th>
+                            <th>Date</th>
+                            <th>Score</th>
+                            <th>Progression</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for result in results %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td><strong>{{ result.quiz.titre }}</strong></td>
+                            <td>{{ result.dateCompletion|date('d/m/Y H:i') }}</td>
+                            <td>{{ result.score }} / {{ result.totalPoints }}</td>
+                            <td>
+                                {% set percent = (result.score / result.totalPoints * 100)|round %}
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: {{ percent }}%"></div>
+                                </div>
+                                <small>{{ percent }}%</small>
+                            </td>
+                            <td>
+                                <a href="{{ path('quiz_result', {'id': result.id}) }}" class="btn-voir-detail">Voir le detail</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                Vous n'avez encore participe a aucun quiz.
+                <br><br>
+                <a href="{{ path('quiz_index') }}" class="btn-decouvrir">Decouvrir les quiz</a>
+            </div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="{{ path('quiz_index') }}" class="btn-retour-quiz">Retour aux quiz</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

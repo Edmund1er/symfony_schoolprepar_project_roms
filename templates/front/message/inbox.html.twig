@@ -1,0 +1,99 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Messagerie - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-inbox {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .card-conversation {
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin-bottom: 15px;
+        cursor: pointer;
+    }
+    .card-conversation:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    .card-conversation .card-body {
+        padding: 20px;
+    }
+    .avatar-conversation {
+        width: 50px;
+        height: 50px;
+        background: #e9ecef;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .avatar-conversation i {
+        font-size: 25px;
+        color: #007bff;
+    }
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        font-weight: 500;
+    }
+    .last-message {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    .date-message {
+        font-size: 0.7rem;
+        color: #999;
+    }
+</style>
+
+<div class="page-inbox">
+    <div class="container">
+        <h2 class="section-title">Mes conversations</h2>
+
+        {% if conversations|length > 0 %}
+            {% for conv in conversations %}
+                {% set autre = conv.user1 == app.user ? conv.user2 : conv.user1 %}
+                <div class="card-conversation" onclick="window.location.href='{{ path('message_conversation', {'id': conv.id}) }}'">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-1 col-3">
+                                <div class="avatar-conversation">
+                                    <i class="fa fa-user-circle"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-6">
+                                <h6 class="mb-1">{{ autre.nom }} {{ autre.prenom }}</h6>
+                                <div class="last-message">
+                                    {% set dernierMessage = conv.messages|last %}
+                                    {% if dernierMessage and dernierMessage.contenu %}
+                                        {{ dernierMessage.contenu|slice(0, 60) }}{% if dernierMessage.contenu|length > 60 %}...{% endif %}
+                                    {% else %}
+                                        Aucun message pour le moment
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-3 text-right">
+                                <div class="date-message">
+                                    {{ conv.dateDernierMessage ? conv.dateDernierMessage|date('d/m/Y H:i') : conv.dateCreation|date('d/m/Y H:i') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info text-center">
+                Aucune conversation pour le moment.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

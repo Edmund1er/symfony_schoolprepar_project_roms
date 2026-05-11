@@ -1,75 +1,353 @@
 {% extends 'front/base.html.twig' %}
 
 {% block title %}Établissements - SchoolPrepar{% endblock %}
-{% block body_class %}courses-page{% endblock %}
 
 {% block body %}
-    <div class="page-header-overlay">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <header class="entry-header">
-                        <h1>Nos Établissements</h1>
-                    </header>
-                </div>
-            </div>
-        </div>
-    </div>
+<style>
+    .page-etablissements {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    
+    .card-etablissement {
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+        cursor: pointer;
+    }
+    
+    .card-etablissement:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    
+    .card-etablissement .card-body {
+        padding: 25px;
+        text-align: center;
+    }
+    
+    .card-etablissement img {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+    
+    .card-etablissement .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #28a745;
+    }
+    
+    .card-etablissement .card-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #333;
+        font-weight: 500;
+    }
+    
+    .load-more-btn {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 12px 40px;
+        margin: 30px 0;
+        font-weight: 600;
+        cursor: pointer;
+    }
+    
+    .load-more-btn:hover {
+        background: #007bff;
+    }
+    
+    /* POPUP - Image à gauche 250x250 */
+    .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .popup-content {
+        background: white;
+        width: 700px;
+        max-width: 90%;
+        border-radius: 20px;
+        overflow: hidden;
+        animation: popupFadeIn 0.3s ease;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    
+    @keyframes popupFadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .popup-header {
+        background: linear-gradient(135deg, #28a745, #007bff);
+        color: white;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .popup-header h3 {
+        margin: 0;
+        font-size: 1.2rem;
+    }
+    
+    .popup-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 28px;
+        cursor: pointer;
+        line-height: 1;
+    }
+    
+    .popup-close:hover {
+        opacity: 0.8;
+    }
+    
+    .popup-body {
+        padding: 25px;
+    }
+    
+    .popup-row {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
+    }
+    
+    .popup-image {
+        flex: 0 0 250px;
+        text-align: center;
+    }
+    
+    .popup-image img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .popup-info {
+        flex: 1;
+    }
+    
+    .popup-info table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .popup-info table th {
+        background: #f8f9fa;
+        padding: 12px;
+        text-align: left;
+        width: 35%;
+        border: 1px solid #dee2e6;
+    }
+    
+    .popup-info table td {
+        padding: 12px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .popup-footer {
+        padding: 15px 20px;
+        text-align: center;
+        border-top: 1px solid #eee;
+    }
+    
+    .popup-footer button {
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 30px;
+        padding: 8px 25px;
+        cursor: pointer;
+    }
+    
+    .popup-footer button:hover {
+        background: #5a6268;
+    }
+    
+    @media (max-width: 600px) {
+        .popup-row {
+            flex-direction: column;
+        }
+        .popup-image {
+            flex: 0 0 auto;
+        }
+    }
+</style>
 
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-12">
-                <div class="breadcrumbs">
-                    <ul class="flex flex-wrap align-items-center p-0 m-0">
-                        <li><a href="{{ path('app_home') }}"><i class="fa fa-home"></i> Accueil</a></li>
-                        <li>Établissements</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div class="page-etablissements">
+    <div class="container">
+        <h2 class="section-title">
+            <i class="fa fa-university"></i> Nos Établissements
+        </h2>
 
-        <p class="lead mt-4">
-            Découvrez les établissements partenaires disponibles sur la plateforme SchoolPrepar.
-        </p>
-
-        <div class="row">
-            {# Ici, nous préparerons la boucle pour afficher les établissements de la base de données #}
-            {% for etablissement in etablissements|default([]) %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        {# Optionnel : Image de l'établissement #}
-                        <img src="{{ asset('assets/front/images/school-placeholder.jpg') }}" class="card-img-top" alt="Image établissement">
-                        
+        <div class="row" id="etablissement-container">
+            {% for etablissement in etablissements %}
+                <div class="col-md-3 mb-4">
+                    <div class="card-etablissement" onclick="openPopup(
+                        '{{ etablissement.nom|e('js') }}',
+                        '{{ etablissement.adresse|e('js') }}',
+                        '{{ etablissement.email|e('js') }}',
+                        '{{ etablissement.image|e('js') }}'
+                    )">
                         <div class="card-body">
-                            <h5 class="card-title">{{ etablissement.nom|default("Nom de l'établissement") }}</h5>
-                            <p class="card-text">
-                                {{ etablissement.description|default("Une brève description de l'établissement et de sa localisation.") }}
-                            </p>
-                        </div>
-                        <div class="card-footer bg-transparent border-top-0">
-                            {# Route vers le détail de l'établissement #}
-                            <a href="#" class="btn btn-primary">Voir les détails</a>
+                            {% if etablissement.image %}
+                                <img src="{{ asset('assets/admin/images/etablissements/' ~ etablissement.image) }}" alt="{{ etablissement.nom }}">
+                            {% else %}
+                                <i class="fa fa-university fa-4x text-success" style="font-size: 60px; display: block; margin: 0 auto 15px;"></i>
+                            {% endif %}
+                            <h5 class="card-title">{{ etablissement.nom }}</h5>
+                            <p class="card-text">{{ etablissement.adresse|slice(0, 60) }}</p>
+                            <p class="card-text small">{{ etablissement.email }}</p>
                         </div>
                     </div>
                 </div>
             {% else %}
-                {# Contenu statique temporaire si la base de données est vide #}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">IPNET Institute of Technology</h5>
-                            <p class="card-text">Institut spécialisé en informatique et technologies de l'information à Lomé.</p>
-                        </div>
-                        <div class="card-footer bg-transparent border-top-0">
-                            <a href="#" class="btn btn-primary">Voir les détails</a>
-                        </div>
-                    </div>
+                <div class="col-12">
+                    <div class="alert alert-info text-center">Aucun établissement disponible.</div>
                 </div>
             {% endfor %}
         </div>
 
-        <div class="mt-4 mb-5">
-            <a href="{{ path('app_home') }}" class="btn btn-secondary">Retour à l'accueil</a>
+        <div class="text-center" id="load-more-section" {% if etablissements|length >= total %}style="display: none;"{% endif %}>
+            <button class="load-more-btn" id="load-more">Charger plus</button>
         </div>
     </div>
+</div>
+
+<!-- POPUP - Image à gauche 250x250 -->
+<div id="popup" class="popup-overlay">
+    <div class="popup-content">
+        <div class="popup-header">
+            <h3><i class="fa fa-university"></i> Détail établissement</h3>
+            <button class="popup-close" onclick="closePopup()">&times;</button>
+        </div>
+        <div class="popup-body">
+            <div class="popup-row">
+                <div class="popup-image">
+                    <img id="popupImage" src="" alt="">
+                </div>
+                <div class="popup-info">
+                    <table>
+                        <tr><th>Nom</th><td id="popupNom"></td></tr>
+                        <tr><th>Adresse</th><td id="popupAdresse"></td></tr>
+                        <tr><th>Email</th><td id="popupEmail"></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="popup-footer">
+            <button onclick="closePopup()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentCount = {{ etablissements|length }};
+    let totalItems = {{ total|default(etablissements|length) }};
+    let isLoading = false;
+
+    function openPopup(nom, adresse, email, image) {
+        document.getElementById('popupNom').innerHTML = nom;
+        document.getElementById('popupAdresse').innerHTML = adresse;
+        document.getElementById('popupEmail').innerHTML = email;
+        
+        var imgElement = document.getElementById('popupImage');
+        if (image && image !== 'null' && image !== '') {
+            imgElement.src = '/assets/admin/images/etablissements/' + image;
+            imgElement.style.display = 'block';
+        } else {
+            imgElement.src = '';
+            imgElement.style.display = 'none';
+        }
+        
+        document.getElementById('popup').style.display = 'flex';
+    }
+
+    function closePopup() {
+        document.getElementById('popup').style.display = 'none';
+    }
+
+    document.getElementById('popup').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePopup();
+        }
+    });
+
+    document.getElementById('load-more')?.addEventListener('click', function() {
+        if (isLoading) return;
+        isLoading = true;
+        
+        fetch('{{ path('etablissement_load_more') }}?offset=' + currentCount)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('etablissement-container');
+                data.items.forEach(item => {
+                    const hasImage = item.image && item.image !== 'null' && item.image !== '';
+                    const html = `
+                        <div class="col-md-3 mb-4">
+                            <div class="card-etablissement" onclick="openPopup(
+                                '${item.nom.replace(/'/g, "\\'")}',
+                                '${item.adresse.replace(/'/g, "\\'")}',
+                                '${item.email.replace(/'/g, "\\'")}',
+                                '${item.image || ''}'
+                            )">
+                                <div class="card-body">
+                                    ${hasImage ? `<img src="/assets/admin/images/etablissements/${item.image}" alt="${item.nom}">` : '<i class="fa fa-university fa-4x text-success" style="font-size: 60px; display: block; margin: 0 auto 15px;"></i>'}
+                                    <h5 class="card-title">${item.nom}</h5>
+                                    <p class="card-text">${item.adresse.substring(0, 60)}</p>
+                                    <p class="card-text small">${item.email}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', html);
+                });
+                currentCount += data.items.length;
+                if (currentCount >= totalItems) {
+                    document.getElementById('load-more-section').style.display = 'none';
+                }
+                isLoading = false;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                isLoading = false;
+            });
+    });
+</script>
 {% endblock %}

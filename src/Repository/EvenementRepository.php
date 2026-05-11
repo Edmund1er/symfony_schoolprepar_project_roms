@@ -16,28 +16,30 @@ class EvenementRepository extends ServiceEntityRepository
         parent::__construct($registry, Evenement::class);
     }
 
-//    /**
-//     * @return Evenement[] Returns an array of Evenement objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function getAvailableCategories(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('DISTINCT e.categorie')
+            ->where('e.categorie IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Evenement
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findByFiliereAndCategorie($filiereId = null, $categorie = null): array
+    {
+        $qb = $this->createQueryBuilder('e')
+            ->orderBy('e.date', 'ASC');
+        
+        if ($filiereId && $filiereId !== 'all') {
+            $qb->andWhere('e.filiere = :filiereId')
+               ->setParameter('filiereId', $filiereId);
+        }
+        
+        if ($categorie && $categorie !== 'all') {
+            $qb->andWhere('e.categorie = :categorie')
+               ->setParameter('categorie', $categorie);
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
 }

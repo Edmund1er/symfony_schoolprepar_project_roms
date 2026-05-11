@@ -1,0 +1,343 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Evenements - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-evenements {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .card-evenement {
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    .card-evenement:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    .card-evenement .card-body {
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .card-evenement .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .card-evenement .card-text {
+        flex-grow: 1;
+        color: #6c757d;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    .badge-categorie {
+        background: #17a2b8;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 30px;
+        font-size: 0.7rem;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+    .btn-evenement {
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        transition: 0.3s;
+        cursor: pointer;
+        width: 100%;
+        text-align: center;
+    }
+    .btn-evenement:hover {
+        background: #007bff;
+        transform: scale(1.02);
+    }
+    .btn-evenement:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+    }
+    .badge-inscrit {
+        background: #28a745;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+    }
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        font-weight: 500;
+    }
+    
+    /* FILTRES CHIPS (tags) */
+    .filters-container {
+        background: white;
+        border-radius: 20px;
+        padding: 15px 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .filter-group {
+        margin-bottom: 15px;
+    }
+    .filter-label {
+        font-weight: 600;
+        margin-right: 15px;
+        color: #333;
+        font-size: 0.85rem;
+    }
+    .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .chip {
+        background: #e9ecef;
+        color: #495057;
+        border: none;
+        border-radius: 40px;
+        padding: 6px 16px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .chip:hover {
+        background: #28a745;
+        color: white;
+        transform: translateY(-1px);
+    }
+    .chip.active {
+        background: #28a745;
+        color: white;
+        box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+    }
+    .chip-filiere {
+        background: #e9ecef;
+        color: #495057;
+        border: none;
+        border-radius: 40px;
+        padding: 6px 16px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .chip-filiere:hover {
+        background: #007bff;
+        color: white;
+    }
+    .chip-filiere.active {
+        background: #007bff;
+        color: white;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+    }
+    
+    /* PAGINATION LEGERE */
+    .pagination-light {
+        margin-top: 30px;
+        text-align: center;
+    }
+    .pagination-light .page-item {
+        display: inline-block;
+        margin: 0 3px;
+    }
+    .pagination-light .page-link {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 40px;
+        padding: 8px 14px;
+        color: #28a745;
+        transition: 0.2s;
+    }
+    .pagination-light .page-link:hover {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+    }
+    .pagination-light .active .page-link {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+    }
+    .pagination-light .disabled .page-link {
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+    
+    a, a:hover {
+        text-decoration: none !important;
+    }
+</style>
+
+<div class="page-evenements">
+    <div class="container">
+        <h2 class="section-title">Evenements a venir</h2>
+        
+        <!-- FILTRES CHIPS -->
+        <div class="filters-container">
+            <div class="filter-group">
+                <div class="filter-label">Categorie :</div>
+                <div class="chips">
+                    <button class="chip {% if categorieActive is empty or categorieActive == 'all' %}active{% endif %}" data-categorie="all">Tous</button>
+                    {% for key, label in categories %}
+                        <button class="chip {% if categorieActive == key %}active{% endif %}" data-categorie="{{ key }}">{{ label }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="filter-group">
+                <div class="filter-label">Filiere :</div>
+                <div class="chips">
+                    <button class="chip-filiere {% if filiereActive is empty or filiereActive == 'all' %}active{% endif %}" data-filiere="all">Toutes</button>
+                    {% for filiere in filieres %}
+                        <button class="chip-filiere {% if filiereActive == filiere.id %}active{% endif %}" data-filiere="{{ filiere.id }}">{{ filiere.nom }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- GRILLE DES EVENEMENTS -->
+        <div class="row" id="evenementsContainer">
+            {% for evenement in evenements %}
+                <div class="col-md-4 mb-4">
+                    <div class="card-evenement">
+                        <div class="card-body">
+                            {% if evenement.categorie %}
+                                <span class="badge-categorie">{{ categories[evenement.categorie]|default(evenement.categorie) }}</span>
+                            {% endif %}
+                            <h5 class="card-title">{{ evenement.titre }}</h5>
+                            <p class="card-text">
+                                <i class="fa fa-calendar"></i> {{ evenement.date|date('d/m/Y H:i') }}<br>
+                                <i class="fa fa-map-marker"></i> {{ evenement.lieu }}
+                                {% if evenement.duree %}
+                                    <br><i class="fa fa-clock-o"></i> {{ evenement.duree }} min
+                                {% endif %}
+                            </p>
+                            {% if evenement.description %}
+                                <p class="card-text small">{{ evenement.description|slice(0, 100) }}{% if evenement.description|length > 100 %}...{% endif %}</p>
+                            {% endif %}
+                            
+                            {% if app.user %}
+                                {% if evenement in app.user.evenements %}
+                                    <span class="badge-inscrit">Deja inscrit</span>
+                                {% else %}
+                                    <button class="btn-evenement" onclick="inscriptionEvenement({{ evenement.id }}, this)">S'inscrire</button>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="btn-evenement">Connectez-vous</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">Aucun evenement</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- PAGINATION LEGERE -->
+        {% if totalPages > 1 %}
+        <div class="pagination-light">
+            {% if currentPage > 1 %}
+                <a href="?page={{ currentPage - 1 }}{% if categorieActive and categorieActive != 'all' %}&categorie={{ categorieActive }}{% endif %}{% if filiereActive and filiereActive != 'all' %}&filiere={{ filiereActive }}{% endif %}" class="page-link" style="display: inline-block;">&laquo; Precedent</a>
+            {% else %}
+                <span class="page-link disabled" style="display: inline-block;">&laquo; Precedent</span>
+            {% endif %}
+            
+            {% for i in 1..totalPages %}
+                {% if i == currentPage %}
+                    <span class="page-link active" style="display: inline-block;">{{ i }}</span>
+                {% elseif i <= 5 or i > totalPages - 2 or (i >= currentPage - 2 and i <= currentPage + 2) %}
+                    <a href="?page={{ i }}{% if categorieActive and categorieActive != 'all' %}&categorie={{ categorieActive }}{% endif %}{% if filiereActive and filiereActive != 'all' %}&filiere={{ filiereActive }}{% endif %}" class="page-link">{{ i }}</a>
+                {% elseif i == 6 and currentPage > 5 %}
+                    <span class="page-link disabled">...</span>
+                {% elseif i == totalPages - 2 and currentPage < totalPages - 3 %}
+                    <span class="page-link disabled">...</span>
+                {% endif %}
+            {% endfor %}
+            
+            {% if currentPage < totalPages %}
+                <a href="?page={{ currentPage + 1 }}{% if categorieActive and categorieActive != 'all' %}&categorie={{ categorieActive }}{% endif %}{% if filiereActive and filiereActive != 'all' %}&filiere={{ filiereActive }}{% endif %}" class="page-link" style="display: inline-block;">Suivant &raquo;</a>
+            {% else %}
+                <span class="page-link disabled" style="display: inline-block;">Suivant &raquo;</span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function inscriptionEvenement(eventId, button) {
+    fetch('/evenement/' + eventId + '/inscription', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            button.textContent = 'Inscrit';
+            button.disabled = true;
+            button.classList.remove('btn-evenement');
+            button.classList.add('badge-inscrit');
+            alert(data.message);
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Erreur');
+    });
+}
+
+// Filtres AJAX sans rechargement
+document.querySelectorAll('.chip, .chip-filiere').forEach(btn => {
+    btn.addEventListener('click', function() {
+        let categorie = document.querySelector('.chip.active')?.dataset.categorie || 'all';
+        let filiere = document.querySelector('.chip-filiere.active')?.dataset.filiere || 'all';
+        
+        if (this.classList.contains('chip')) {
+            categorie = this.dataset.categorie;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+        } else {
+            filiere = this.dataset.filiere;
+            document.querySelectorAll('.chip-filiere').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+        }
+        
+        let url = new URL(window.location.href);
+        if (categorie && categorie !== 'all') {
+            url.searchParams.set('categorie', categorie);
+        } else {
+            url.searchParams.delete('categorie');
+        }
+        if (filiere && filiere !== 'all') {
+            url.searchParams.set('filiere', filiere);
+        } else {
+            url.searchParams.delete('filiere');
+        }
+        url.searchParams.set('page', 1);
+        window.location.href = url.toString();
+    });
+});
+</script>
+{% endblock %}

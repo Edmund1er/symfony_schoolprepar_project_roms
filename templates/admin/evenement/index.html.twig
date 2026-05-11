@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Gestion des Événements{% endblock %}
+{% block title %}Gestion des événements{% endblock %}
 
 {% block body %}
 <div class="page-header">
@@ -8,8 +8,8 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <div class="page-header-title">
-                    <h5 class="m-b-10">Liste des Événements</h5>
-                    <p class="m-b-0">Gérer les événements de la plateforme</p>
+                    <h5 class="m-b-10">Gestion des événements</h5>
+                    <p class="m-b-0">Gérer les événements et webinaires</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -28,85 +28,56 @@
             <div class="page-body">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Événements programmés</h5>
-                        <a href="{{ path('app_admin_evenement_new') }}" class="btn btn-primary float-right">
-                            <i class="fa fa-plus"></i> Ajouter un événement
-                        </a>
+                        <h5>Liste des événements</h5>
+                        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">
+                            <i class="fa fa-plus"></i> Nouvel événement
+                        </button>
                     </div>
                     <div class="card-block">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
+                            <table class="table table-bordered table-hover">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th style="width: 5%">#</th>
-                                        <th style="width: 10%">APERÇU</th>
-                                        <th style="width: 25%">TITRE</th>
-                                        <th style="width: 20%">DATE</th>
-                                        <th style="width: 20%">LIEU</th>
-                                        <th style="width: 20%">ACTIONS</th>
+                                        <th>#</th>
+                                        <th>Titre</th>
+                                        <th>Date</th>
+                                        <th>Lieu</th>
+                                        <th>Participants</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for evenement in evenements %}
+                                {% set offset = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() %}
+                                {% for evenement in pagination %}
                                     <tr>
-                                        <td class="text-center">{{ loop.index }}</td>
-                                        <td class="text-center">
-                                            <div class="avatar">
-                                                <i class="fa fa-calendar fa-2x text-c-yellow"></i>
-                                            </div>
-                                        </td>
+                                        <td>{{ offset + loop.index }}</td>
                                         <td><strong>{{ evenement.titre }}</strong></td>
-                                        <td>{{ evenement.date ? evenement.date|date('d/m/Y H:i') : '' }}</td>
+                                        <td>{{ evenement.date|date('d/m/Y H:i') }}</td>
                                         <td>{{ evenement.lieu }}</td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ path('app_admin_evenement_show', {'id': evenement.id}) }}" 
-                                                   class="btn btn-sm btn-info" title="Voir">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                                <a href="{{ path('app_admin_evenement_edit', {'id': evenement.id}) }}" 
-                                                   class="btn btn-sm btn-warning" title="Modifier">
-                                                    <i class="fa fa-pencil"></i>
-                                                </a>
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-danger" 
-                                                        data-toggle="modal" 
-                                                        data-target="#deleteModalEvent{{ evenement.id }}"
-                                                        title="Supprimer">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                            
-                                            <div class="modal fade" id="deleteModalEvent{{ evenement.id }}" tabindex="-1" role="dialog">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Confirmer la suppression</h5>
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Êtes-vous sûr de vouloir supprimer l'événement <strong>{{ evenement.titre }}</strong> ?</p>
-                                                            <p class="text-danger">Cette action est irréversible.</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                                            <form method="post" action="{{ path('app_admin_evenement_delete', {'id': evenement.id}) }}">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
-                                                                <button type="submit" class="btn btn-danger">Confirmer</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <td><span class="badge badge-secondary">{{ evenement.participants|length }} inscrit(s)</span></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-outline-warning" data-toggle="modal" data-target="#editModal{{ evenement.id }}">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ evenement.id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </td>
-                                     </tr>
+                                    </tr>
                                 {% else %}
-                                    <tr>
-                                        <td colspan="6" class="text-center">Aucun événement trouvé</td>
-                                     </tr>
+                                    <tr><td colspan="6" class="text-center">Aucun événement</td></tr>
                                 {% endfor %}
                                 </tbody>
-                             </table>
+                            </table>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Affichage de {{ pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1 }} à {{ min(pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage(), pagination.getTotalItemCount()) }} sur {{ pagination.getTotalItemCount() }} événements</small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,4 +85,92 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL AJOUT -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_evenement_new') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvel événement</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input type="text" name="titre" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date et heure</label>
+                        <input type="datetime-local" name="date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Lieu</label>
+                        <input type="text" name="lieu" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS EDITION & SUPPRESSION -->
+{% for evenement in pagination %}
+<div class="modal fade" id="editModal{{ evenement.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_evenement_edit', {'id': evenement.id}) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier {{ evenement.titre }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input type="text" name="titre" class="form-control" value="{{ evenement.titre }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date et heure</label>
+                        <input type="datetime-local" name="date" class="form-control" value="{{ evenement.date|date('Y-m-d\\TH:i') }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Lieu</label>
+                        <input type="text" name="lieu" class="form-control" value="{{ evenement.lieu }}">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal{{ evenement.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_evenement_delete', {'id': evenement.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Supprimer l'événement <strong>{{ evenement.titre }}</strong> ?</p>
+                    <p class="text-danger">Action irréversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}

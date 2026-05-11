@@ -9,7 +9,9 @@
             <div class="col-md-8">
                 <div class="page-header-title">
                     <h5 class="m-b-10">Tableau de bord</h5>
-                    <p class="m-b-0">Bienvenue sur l'administration de SchoolPrepar</p>
+                    <p class="m-b-0">
+                        Bienvenue {% if app.user %}{{ app.user.nom }} {{ app.user.prenom }}{% endif %} sur l'administration de SchoolPrepar
+                    </p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -28,8 +30,9 @@
     <div class="main-body">
         <div class="page-wrapper">
             <div class="page-body">
+                <!-- Première ligne de 4 cartes -->
                 <div class="row">
-                    <!-- Carte Filières -->
+                    <!-- Carte Filières - Violet -->
                     <div class="col-xl-3 col-md-6">
                         <div class="card">
                             <div class="card-block">
@@ -39,7 +42,7 @@
                                         <h6 class="text-muted m-b-0">Filières</h6>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <i class="fa fa-book f-28"></i>
+                                        <i class="fa fa-book f-28 text-c-purple"></i>
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +61,7 @@
                         </div>
                     </div>
 
-                    <!-- Carte Établissements -->
+                    <!-- Carte Établissements - Vert -->
                     <div class="col-xl-3 col-md-6">
                         <div class="card">
                             <div class="card-block">
@@ -68,7 +71,7 @@
                                         <h6 class="text-muted m-b-0">Établissements</h6>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <i class="fa fa-university f-28"></i>
+                                        <i class="fa fa-university f-28 text-c-green"></i>
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +90,7 @@
                         </div>
                     </div>
 
-                    <!-- Carte Utilisateurs -->
+                    <!-- Carte Utilisateurs - Bleu -->
                     <div class="col-xl-3 col-md-6">
                         <div class="card">
                             <div class="card-block">
@@ -97,7 +100,7 @@
                                         <h6 class="text-muted m-b-0">Utilisateurs</h6>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <i class="fa fa-users f-28"></i>
+                                        <i class="fa fa-users f-28 text-c-blue"></i>
                                     </div>
                                 </div>
                             </div>
@@ -116,7 +119,7 @@
                         </div>
                     </div>
 
-                    <!-- Carte Événements -->
+                    <!-- Carte Événements - Jaune -->
                     <div class="col-xl-3 col-md-6">
                         <div class="card">
                             <div class="card-block">
@@ -126,7 +129,7 @@
                                         <h6 class="text-muted m-b-0">Événements</h6>
                                     </div>
                                     <div class="col-4 text-right">
-                                        <i class="fa fa-calendar f-28"></i>
+                                        <i class="fa fa-calendar f-28 text-c-yellow"></i>
                                     </div>
                                 </div>
                             </div>
@@ -144,6 +147,120 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Deuxième ligne de 4 cartes -->
+                <div class="row">
+  <!-- Quiz - Rose -->
+<div class="col-xl-3 col-md-6">
+    <div class="card">
+        <div class="card-block">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h4 class="text-c-pink">{{ quiz_count|default(0) }}</h4>
+                    <h6 class="text-muted m-b-0">Quiz</h6>
+                </div>
+                <div class="col-4 text-right">
+                    <i class="fa fa-question-circle f-28 text-c-pink"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-c-pink">
+            <div class="row align-items-center">
+                <div class="col-9">
+                    <p class="text-white m-b-0">Gérer les quiz</p>
+                </div>
+                <div class="col-3 text-right">
+                    <a href="{{ path('app_admin_quiz_index') }}" class="text-white">
+                        <i class="fa fa-arrow-right f-16"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forum - Orange -->
+<div class="col-xl-3 col-md-6">
+    <div class="card">
+        <div class="card-block">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h4 class="text-c-orange">{{ forum_categories_count|default(0) }}</h4>
+                    <h6 class="text-muted m-b-0">Catégories forum</h6>
+                </div>
+                <div class="col-4 text-right">
+                    <i class="fa fa-comments f-28 text-c-orange"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-c-orange">
+            <div class="row align-items-center">
+                <div class="col-9">
+                    <p class="text-white m-b-0">Gérer le forum</p>
+                </div>
+                <div class="col-3 text-right">
+                    <a href="{{ path('app_admin_forum_categorie_index') }}" class="text-white">
+                        <i class="fa fa-arrow-right f-16"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mentorat - Marron -->
+<div class="col-xl-3 col-md-6">
+    <div class="card">
+        <div class="card-block">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h4 class="text-c-brown">{{ mentorat_count|default(0) }}</h4>
+                    <h6 class="text-muted m-b-0">Demandes mentorat</h6>
+                </div>
+                <div class="col-4 text-right">
+                    <i class="fa fa-handshake-o f-28 text-c-brown"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-c-brown">
+            <div class="row align-items-center">
+                <div class="col-9">
+                    <p class="text-white m-b-0">Gérer le mentorat</p>
+                </div>
+                <div class="col-3 text-right">
+                    <a href="{{ path('app_admin_mentorat_index') }}" class="text-white">
+                        <i class="fa fa-arrow-right f-16"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Paramètres - Cyan -->
+<div class="col-xl-3 col-md-6">
+    <div class="card">
+        <div class="card-block">
+            <div class="row align-items-center">
+                <div class="col-8">
+                    <h4 class="text-c-cyan">⚙️</h4>
+                    <h6 class="text-muted m-b-0">Paramètres</h6>
+                </div>
+                <div class="col-4 text-right">
+                    <i class="fa fa-cogs f-28 text-c-cyan"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-c-cyan">
+            <div class="row align-items-center">
+                <div class="col-9">
+                    <p class="text-white m-b-0">Configuration</p>
+                </div>
+                <div class="col-3 text-right">
+                    <a href="#" class="text-white">
+                        <i class="fa fa-arrow-right f-16"></i>
+                    </a>
                 </div>
             </div>
         </div>

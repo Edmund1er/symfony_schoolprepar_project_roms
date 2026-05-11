@@ -1,60 +1,102 @@
-<header class="site-header">
-    <div class="top-header-bar">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12 col-lg-6 d-none d-md-flex flex-wrap justify-content-center justify-content-lg-start mb-3 mb-lg-0">
-                    <div class="header-bar-email d-flex align-items-center">
-                        <i class="fa fa-envelope"></i><a href="mailto:contact@schoolprepar.tg">contact@schoolprepar.tg</a>
-                    </div>
-                    <div class="header-bar-text lg-flex align-items-center">
-                        <p><i class="fa fa-phone"></i>+228 90 00 00 00</p>
+<header class="site-header" style="position: relative !important;">
+    <!-- Top header -->
+    <div class="top-header-bar" style="background: #244463; color: #fff; padding: 8px 0;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div style="display: flex; gap: 30px;">
+                        <div>
+                            <i class="fa fa-envelope" style="color: #19c880;"></i>
+                            <a href="mailto:contact@schoolprepar.tg" style="color: #fff; text-decoration: none;">contact@schoolprepar.tg</a>
+                        </div>
+                        <div>
+                            <i class="fa fa-phone" style="color: #19c880;"></i>
+                            <span style="color: #fff;">+228 91 77 07 61</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-6 d-flex flex-wrap justify-content-center justify-content-lg-end align-items-center">
-                    <div class="header-bar-search">
-                        <form class="flex align-items-stretch">
-                            <input type="search" placeholder="Que voulez-vous apprendre ?">
-                            <button type="submit" class="flex justify-content-center align-items-center"><i class="fa fa-search"></i></button>
+                <div class="col-md-6">
+                    <div style="display: flex; justify-content: flex-end; align-items: center; gap: 15px; flex-wrap: wrap;">
+                        <form style="display: flex; margin: 0;">
+                            <input type="search" placeholder="Que voulez-vous apprendre ?" 
+                                   style="background: #fff; border: none; border-radius: 20px 0 0 20px; padding: 7px 12px; width: 190px; outline: none;">
+                            <button type="submit" 
+                                    style="background: #19c880; border: none; border-radius: 0 20px 20px 0; padding: 7px 12px; color: #fff; cursor: pointer;">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </form>
-                    </div>
-                    <div class="header-bar-menu">
-                        <ul class="flex justify-content-center align-items-center py-2 pt-md-0">
-                            <li><a href="#">Inscription</a></li>
-                            <li><a href="#">Connexion</a></li>
-                        </ul>
+                        
+                        <div>
+                            <ul style="display: flex; margin: 0; padding: 0; list-style: none; gap: 5px;">
+                                {% if app.user %}
+                                    <li><a href="{{ path('mes_inscriptions') }}" style="color: #fff; background: rgba(52, 213, 224, 0.25); padding: 5px 10px; border-radius: 20px; text-decoration: none; font-size: 13px;">Mes inscriptions</a></li>
+                                    <li><a href="{{ path('evenement_index') }}" style="color: #fff; background: rgba(52, 213, 224, 0.25); padding: 5px 10px; border-radius: 20px; text-decoration: none; font-size: 13px;">Evenements</a></li>
+                                    <li><a href="{{ path('app_logout') }}" style="color: #fff; background: #dc3545; padding: 5px 10px; border-radius: 20px; text-decoration: none; font-size: 13px;">Deconnexion</a></li>
+                                {% else %}
+                                    <li><a href="{{ path('app_register') }}" style="color: #fff; background: rgba(25,200,128,0.25); padding: 5px 10px; border-radius: 20px; text-decoration: none; font-size: 13px;">Inscription</a></li>
+                                    <li><a href="{{ path('app_login') }}" style="color: #fff; background: #007bff; padding: 5px 10px; border-radius: 20px; text-decoration: none; font-size: 13px;">Connexion</a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="nav-bar">
+    <!-- Nav bar -->
+    <div class="nav-bar" style="background: #e8f5e9; padding: 12px 0;">
         <div class="container">
-            <div class="row">
-                <div class="col-9 col-lg-3">
-                    <div class="site-branding">
-                        {# Correction : app_home au lieu de home #}
-                        <h1 class="site-title"><a href="{{ path('app_home') }}" rel="home">Ezu<span>ca</span></a></h1>
-                    </div>
+            <div class="row align-items-center">
+                <div class="col-6 col-lg-2 col-md-3">
+                    <h1 style="margin: 0;">
+                        <a href="{{ path('front_home') }}" style="color: #2e7d32; text-decoration: none; font-size: 26px; font-weight: 600;">Ezuca</a>
+                    </h1>
                 </div>
-
-                <div class="col-3 col-lg-9 flex justify-content-end align-content-center">
-                    <nav class="site-navigation flex justify-content-end align-items-center">
-                        <ul class="flex flex-column flex-lg-row justify-content-lg-end align-content-center">
-                            {# Correction des noms de routes #}
-                            <li><a href="{{ path('app_home') }}">Accueil</a></li>
-                            <li><a href="#">À propos</a></li>
-                            <li><a href="{{ path('filiere_index') }}">Filières</a></li>
-                            <li><a href="{{ path('etablissement_index') }}">Établissements</a></li>
-                            <li><a href="#">Contact</a></li>
-                        </ul>
-                        <div class="hamburger-menu d-lg-none">
-                            <span></span><span></span><span></span><span></span>
-                        </div>
-                    </nav>
+                <div class="col-6 col-lg-10 col-md-9">
+                    <ul style="display: flex; justify-content: flex-end; margin: 0; padding: 0; list-style: none; gap: 4px;">
+                        <li><a href="{{ path('front_home') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Accueil</a></li>
+                        
+                        {# Eleve ou non connecte voit filieres et etablissements #}
+                        {% if not app.user or 'ROLE_ELEVE' in app.user.role %}
+                            <li><a href="{{ path('filiere_index') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Filières</a></li>
+                            <li><a href="{{ path('etablissement_index') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Etablissements</a></li>
+                        {% endif %}
+                        
+                        {# Forum pour tout le monde #}
+                        <li><a href="{{ path('forum_index') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Forum</a></li>
+                        
+                        {# Eleve uniquement #}
+                        {% if app.user and 'ROLE_ELEVE' in app.user.role %}
+                            <li><a href="{{ path('quiz_index') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Quiz</a></li>
+                            <li><a href="{{ path('mentorat_index') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Mentors</a></li>
+                            <li><a href="{{ path('mentorat_mes_demandes') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Demandes</a></li>
+                        {% endif %}
+                        
+                        {# Mentor uniquement #}
+                        {% if app.user and 'ROLE_MENTOR' in app.user.role %}
+                            <li><a href="{{ path('mentorat_requetes') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Requetes</a></li>
+                        {% endif %}
+                        
+                        {# Profil pour tous les connectes #}
+                        {% if app.user %}
+                            <li><a href="{{ path('profil_index') }}" style="color: #2e7d32; text-decoration: none; font-weight: 500; background: rgba(46,125,50,0.1); padding: 6px 12px; border-radius: 30px; transition: 0.3s; font-size: 14px;">Profil</a></li>
+                        {% endif %}
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 </header>
+
+<style>
+.nav-bar ul li a:hover {
+    background: #19c880 !important;
+    color: white !important;
+    transform: translateY(-2px);
+}
+.top-header-bar ul li a:hover {
+    opacity: 0.85;
+}
+</style>

@@ -1,0 +1,101 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Quiz d'orientation - SchoolPrepar{% endblock %}
+
+{% block body %}
+<style>
+    .page-quiz {
+        background: #f0f2f5;
+        padding: 40px 0;
+        min-height: 100vh;
+    }
+    .card-quiz {
+        background: white;
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+        cursor: pointer;
+    }
+    .card-quiz:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    .card-quiz .card-body {
+        padding: 25px;
+        text-align: center;
+    }
+    .card-quiz .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+    .card-quiz .card-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        text-align: center;
+        color: #333;
+        font-weight: 500;
+    }
+    .btn-resultats {
+        background: #a6e6b5;
+        color: white;
+        border: none;
+        border-radius: 40px;
+        padding: 10px 25px;
+        transition: 0.3s;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-resultats:hover {
+        background: #007bff;
+        transform: translateY(-2px);
+        color: white;
+    }
+</style>
+
+<div class="page-quiz">
+    <div class="container">
+        <h2 class="section-title">Quiz d'orientation</h2>
+
+        <div class="row">
+            {% for quiz in quizs %}
+                <div class="col-md-3 mb-4">
+                    <div class="card-quiz" onclick="window.location.href='{{ path('quiz_start', {'id': quiz.id}) }}'">
+                        <div class="card-body">
+                            <i class="fa 
+                                {% if quiz.type == 'orientation' %}fa-compass
+                                {% elseif quiz.type == 'personnalite' %}fa-smile-o
+                                {% else %}fa-lightbulb-o
+                                {% endif %} fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title">{{ quiz.titre }}</h5>
+                            <p class="card-text">{{ quiz.description|slice(0, 80) }}</p>
+                            <div class="mt-2">
+                                <span class="badge-quiz">{{ quiz.duree ? quiz.duree ~ ' min' : 'Illimite' }}</span>
+                                <span class="badge-quiz ml-1">{{ quiz.questions|length }} questions</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">Aucun quiz disponible.</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if app.user and 'ROLE_ELEVE' in app.user.role %}
+            <div class="text-center mt-4">
+                <a href="{{ path('quiz_mes_resultats') }}" class="btn-resultats">Voir mes resultats</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

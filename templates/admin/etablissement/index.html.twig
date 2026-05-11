@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Gestion des Établissements{% endblock %}
+{% block title %}Gestion des établissements{% endblock %}
 
 {% block body %}
 <div class="page-header">
@@ -8,7 +8,7 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <div class="page-header-title">
-                    <h5 class="m-b-10">Liste des Établissements</h5>
+                    <h5 class="m-b-10">Gestion des établissements</h5>
                     <p class="m-b-0">Gérer les établissements partenaires</p>
                 </div>
             </div>
@@ -28,90 +28,62 @@
             <div class="page-body">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Établissements partenaires</h5>
-                        <a href="{{ path('app_admin_etablissement_new') }}" class="btn btn-primary float-right">
-                            <i class="fa fa-plus"></i> Ajouter un établissement
-                        </a>
+                        <h5>Liste des établissements</h5>
+                        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">
+                            <i class="fa fa-plus"></i> Nouvel établissement
+                        </button>
                     </div>
                     <div class="card-block">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
+                            <table class="table table-bordered table-hover">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th style="width: 5%">#</th>
-                                        <th style="width: 10%">APERÇU</th>
-                                        <th style="width: 25%">NOM</th>
-                                        <th style="width: 30%">ADRESSE</th>
-                                        <th style="width: 30%">ACTIONS</th>
+                                        <th>#</th>
+                                        <th>Logo</th>
+                                        <th>Nom</th>
+                                        <th>Adresse</th>
+                                        <th>Email</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for etablissement in etablissements %}
+                                {% set offset = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() %}
+                                {% for etablissement in pagination %}
                                     <tr>
-                                        <td class="text-center">{{ loop.index }}</td>
+                                        <td>{{ offset + loop.index }}</td>
                                         <td class="text-center">
                                             {% if etablissement.image %}
-                                                <img src="{{ asset('assets/admin/images/etablissements/' ~ etablissement.image) }}" 
-                                                     alt="{{ etablissement.nom }}" 
-                                                     width="40" height="40" 
-                                                     style="object-fit: cover; border-radius: 8px;">
+                                                <img src="{{ asset('assets/admin/images/etablissements/' ~ etablissement.image) }}" width="35" height="35" style="object-fit: cover; border-radius: 6px;">
                                             {% else %}
-                                                <div class="avatar">
-                                                    <i class="fa fa-university fa-2x text-c-green"></i>
-                                                </div>
+                                                <i class="fa fa-university fa-2x text-muted"></i>
                                             {% endif %}
                                         </td>
                                         <td><strong>{{ etablissement.nom }}</strong></td>
-                                        <td>{{ etablissement.adresse }}</td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ path('app_admin_etablissement_show', {'id': etablissement.id}) }}" 
-                                                   class="btn btn-sm btn-info" title="Voir">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                                <a href="{{ path('app_admin_etablissement_edit', {'id': etablissement.id}) }}" 
-                                                   class="btn btn-sm btn-warning" title="Modifier">
-                                                    <i class="fa fa-pencil"></i>
-                                                </a>
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-danger" 
-                                                        data-toggle="modal" 
-                                                        data-target="#deleteModalEtab{{ etablissement.id }}"
-                                                        title="Supprimer">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                            
-                                            <div class="modal fade" id="deleteModalEtab{{ etablissement.id }}" tabindex="-1" role="dialog">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Confirmer la suppression</h5>
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Êtes-vous sûr de vouloir supprimer l'établissement <strong>{{ etablissement.nom }}</strong> ?</p>
-                                                            <p class="text-danger">Cette action est irréversible.</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                                            <form method="post" action="{{ path('app_admin_etablissement_delete', {'id': etablissement.id}) }}">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ etablissement.id) }}">
-                                                                <button type="submit" class="btn btn-danger">Confirmer</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <td>{{ etablissement.adresse|slice(0, 50) }}{% if etablissement.adresse|length > 50 %}...{% endif %}</td>
+                                        <td>{{ etablissement.email }}</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-outline-warning" data-toggle="modal" data-target="#editModal{{ etablissement.id }}">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ etablissement.id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 {% else %}
-                                    <tr>
-                                        <td colspan="5" class="text-center">Aucun établissement trouvé</td>
-                                    </tr>
+                                    <tr><td colspan="6" class="text-center">Aucun établissement</td></tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Affichage de {{ pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1 }} à {{ min(pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage(), pagination.getTotalItemCount()) }} sur {{ pagination.getTotalItemCount() }} établissements</small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -119,4 +91,102 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL AJOUT -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_etablissement_new') }}" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvel établissement</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="nom" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <textarea name="adresse" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Logo</label>
+                        <input type="file" name="image" class="form-control-file">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS EDITION & SUPPRESSION -->
+{% for etablissement in pagination %}
+<div class="modal fade" id="editModal{{ etablissement.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_etablissement_edit', {'id': etablissement.id}) }}" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier {{ etablissement.nom }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="nom" class="form-control" value="{{ etablissement.nom }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <textarea name="adresse" class="form-control" rows="2">{{ etablissement.adresse }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ etablissement.email }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Logo</label>
+                        {% if etablissement.image %}<img src="{{ asset('assets/admin/images/etablissements/' ~ etablissement.image) }}" width="50" class="mb-2 d-block">{% endif %}
+                        <input type="file" name="image" class="form-control-file">
+                        <small class="text-muted">Laisser vide pour garder l'image actuelle</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal{{ etablissement.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_etablissement_delete', {'id': etablissement.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ etablissement.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Supprimer l'établissement <strong>{{ etablissement.nom }}</strong> ?</p>
+                    <p class="text-danger">Action irréversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}

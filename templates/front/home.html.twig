@@ -1,30 +1,37 @@
-{# templates/front/home.html.twig #}
 {% extends 'front/base.html.twig' %}
 
 {% block title %}Accueil - SchoolPrepar{% endblock %}
 
 {% block body %}
-    {# Si votre CSS utilise une image de fond définie dans le HTML, utilisez asset() comme ceci #}
-    <div class="hero-content-overlay" style="background-image: url('{{ asset('assets/front/images/hero-bg.jpg') }}')">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="hero-content-wrap flex flex-column justify-content-center align-items-start">
-                        <header class="entry-header">
-                            <h4>Bienvenue sur SchoolPrepar</h4>
-                            <h1>Meilleur système d'orientation</h1>
-                        </header>
-                        <div class="entry-content">
-                            <p>Trouvez votre filière et votre établissement en quelques clics.</p>
-                        </div>
-                        
-                        {# Exemple de bouton avec un lien vers une autre page front #}
-                        <div class="entry-footer mt-4">
-                            <a href="{{ path('filiere_index') }}" class="btn btn-primary">Voir les filières</a>
-                        </div>
+
+{# Message discret pour utilisateur connecté #}
+{% if app.user %}
+<div class="container mt-3">
+    <div class="alert alert-success alert-dismissible fade show text-center" style="border-radius: 30px; background: #4dc6c8; color: white; border: none;">
+        <p> Bonjour <strong>{{ app.user.prenom }}</strong>, bienvenue sur SchoolPrepar</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: brightness(0) invert(1);"></button>
+    </div>
+</div>
+{% endif %}
+
+<div class="hero-content-overlay" style="background-image: url('{{ asset('assets/front/images/hero-bg.jpg') }}')">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="hero-content-wrap flex flex-column justify-content-center align-items-start">
+                    <header class="entry-header">
+                        <h4>Bienvenue sur SchoolPrepar</h4>
+                        <h1>Meilleur système d'orientation</h1>
+                    </header>
+                    <div class="entry-content">
+                        <p>Trouvez votre filière et votre établissement en quelques clics.</p>
+                    </div>
+                    <div class="entry-footer mt-4">
+                        <a href="{{ path('filiere_index') }}" class="btn btn-primary">Voir les filières</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

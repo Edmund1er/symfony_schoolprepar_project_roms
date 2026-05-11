@@ -1,0 +1,140 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Demandes de mentorat{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Demandes de mentorat</h5>
+                    <p class="m-b-0">Gérer les demandes de mentorat</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="#">Mentorat</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Liste des demandes</h5>
+                    </div>
+                    <div class="card-block">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th width="5%">#</th>
+                                        <th width="15%">Élève</th>
+                                        <th width="15%">Mentor</th>
+                                        <th width="30%">Message</th>
+                                        <th width="12%">Date demande</th>
+                                        <th width="10%">Statut</th>
+                                        <th width="13%">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% set offset = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() %}
+                                {% for demande in pagination %}
+                                    <tr style="vertical-align: middle;">
+                                        <td class="text-center">{{ offset + loop.index }}</td>
+                                        <td>
+                                            <strong>{{ demande.eleve.nom }} {{ demande.eleve.prenom }}</strong><br>
+                                            <small class="text-muted">{{ demande.eleve.email }}</small>
+                                        </td>
+                                        <td>
+                                            <strong>{{ demande.mentor.nom }} {{ demande.mentor.prenom }}</strong><br>
+                                            <small class="text-muted">{{ demande.mentor.email }}</small>
+                                        </td>
+                                        <td>{{ demande.message|slice(0, 80) }}{% if demande.message|length > 80 %}...{% endif %}</td>
+                                        <td class="text-center">{{ demande.demandeLe|date('d/m/Y H:i') }}</td>
+                                        <td class="text-center">
+                                            {% if demande.statut == 'en_attente' %}
+                                                <span class="badge badge-warning" style="padding: 5px 10px;">En attente</span>
+                                            {% elseif demande.statut == 'accepte' %}
+                                                <span class="badge badge-success" style="padding: 5px 10px;">Accepté</span>
+                                            {% elseif demande.statut == 'refuse' %}
+                                                <span class="badge badge-danger" style="padding: 5px 10px;">Refusé</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary" style="padding: 5px 10px;">{{ demande.statut }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if demande.statut == 'en_attente' %}
+                                                <a href="{{ path('app_admin_mentorat_changer_statut', {'id': demande.id, 'statut': 'accepte'}) }}" class="btn btn-sm btn-outline-success" title="Accepter">
+                                                    <i class="fa fa-check"></i> Accepter
+                                                </a>
+                                                <a href="{{ path('app_admin_mentorat_changer_statut', {'id': demande.id, 'statut': 'refuse'}) }}" class="btn btn-sm btn-outline-danger" title="Refuser">
+                                                    <i class="fa fa-times"></i> Refuser
+                                                </a>
+                                            {% endif %}
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ demande.id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">Aucune demande de mentorat</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted">
+                                    Affichage de {{ pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1 }} 
+                                    à {{ min(pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage(), pagination.getTotalItemCount()) }} 
+                                    sur {{ pagination.getTotalItemCount() }} demandes
+                                </small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS SUPPRESSION -->
+{% for demande in pagination %}
+<div class="modal fade" id="deleteModal{{ demande.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_mentorat_delete', {'id': demande.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ demande.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Supprimer la demande de <strong>{{ demande.eleve.nom }} {{ demande.eleve.prenom }}</strong> ?</p>
+                    <p class="text-danger"> Action irréversible</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

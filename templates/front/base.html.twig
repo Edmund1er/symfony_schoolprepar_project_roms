@@ -1,4 +1,3 @@
-{# templates/front/base.html.twig #}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,29 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}SchoolPrepar{% endblock %}</title>
 
-    {# --- CSS Front-office --- #}
-    <link rel="stylesheet" href="{{ asset('assets/front/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/front/css/font-awesome.min.css') }}">
-    {# Le fichier style.css est à la racine de front #}
+    <!-- Bootstrap CSS (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ asset('assets/front/style.css') }}">
 
     {% block stylesheets %}{% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
     
-    {# Inclusion de la navigation #}
     {% include 'front/partials/nav.html.twig' %}
 
-    {# Contenu principal #}
     {% block body %}{% endblock %}
 
-    {# Inclusion du pied de page #}
     {% include 'front/partials/footer.html.twig' %}
 
-    {# --- JS Front-office --- #}
-    <script src="{{ asset('assets/front/js/jquery.js') }}"></script>
-  
+    <!-- jQuery en premier -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Bootstrap JS (local ou CDN) -->
+    <script src="{{ asset('assets/front/js/bootstrap.bundle.min.js') }}"></script>
+    
+    <!-- Swiper JS (optionnel) -->
+    <script src="{{ asset('assets/front/js/swiper.min.js') }}"></script>
+    
+    <!-- Masonry (optionnel) -->
+    <script src="{{ asset('assets/front/js/masonry.pkgd.min.js') }}"></script>
+    
+    <!-- Custom JS -->
     <script src="{{ asset('assets/front/js/custom.js') }}"></script>
+
+    <script>
+    function inscriptionEvenement(eventId, button) {
+        fetch('/evenement/' + eventId + '/inscription', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.textContent = 'Inscrit ✓';
+                button.disabled = true;
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-success');
+                alert('Vous êtes inscrit à cet événement !');
+            } else {
+                alert(data.message || 'Erreur lors de l\'inscription');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue');
+        });
+    }
+
+    // Protection pour Swiper
+    if (typeof Swiper !== 'undefined' && $('.testimonial-slider').length) {
+        new Swiper('.testimonial-slider', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            autoplay: { delay: 5000 },
+            pagination: { el: '.swiper-pagination', clickable: true }
+        });
+    }
+    </script>
 
     {% block javascripts %}{% endblock %}
 </body>

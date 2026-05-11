@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Etablissement;
-use App\Form\EtablissementType;
 use App\Repository\EtablissementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,110 +11,115 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/admin/etablissement')]
+#[IsGranted('ROLE_ADMIN')]
 final class AdminEtablissementController extends AbstractController
 {
-    #[Route(name: 'app_admin_etablissement_index', methods: ['GET'])]
-    public function index(EtablissementRepository $etablissementRepository): Response
+    #[Route('/', name: 'app_admin_etablissement_index', methods: ['GET'])]
+    public function index(EtablissementRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
+        $query = $repository->createQueryBuilder('e')->getQuery();
+        
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            5
+        );
+        
         return $this->render('admin/etablissement/index.html.twig', [
-            'etablissements' => $etablissementRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 
-    #[Route('/new', name: 'app_admin_etablissement_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_admin_etablissement_new', methods: ['POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $etablissement = new Etablissement();
-        $form = $this->createForm(EtablissementType::class, $etablissement);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        
+        $etablissement->setNom($request->request->get('nom'));
+        $etablissement->setAdresse($request->request->get('adresse'));
+        $etablissement->setEmail($request->request->get('email'));
+        
+        $imageFile = $request->files->get('image');
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
             
-            // Gestion de l'upload de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-                
-                try {
-                    $imageFile->move(
-                        $this->getParameter('etablissement_images_directory'),
-                        $newFilename
-                    );
-                    $etablissement->setImage($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
-                }
+            try {
+                $imageFile->move(
+                    $this->getParameter('etablissement_images_directory'),
+                    $newFilename
+                );
+                $etablissement->setImage($newFilename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
             }
-            
-            $entityManager->persist($etablissement);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_admin_etablissement_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->render('admin/etablissement/new.html.twig', [
-            'etablissement' => $etablissement,
-            'form' => $form,
-        ]);
+        
+        $entityManager->persist($etablissement);
+        $entityManager->flush();
+        
+        $this->addFlash('success', 'Établissement ajouté avec succès');
+        return $this->redirectToRoute('app_admin_etablissement_index');
     }
 
-    #[Route('/{id}', name: 'app_admin_etablissement_show', methods: ['GET'])]
-    public function show(Etablissement $etablissement): Response
-    {
-        return $this->render('admin/etablissement/show.html.twig', [
-            'etablissement' => $etablissement,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_admin_etablissement_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_admin_etablissement_edit', methods: ['POST'])]
     public function edit(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
-        $form = $this->createForm(EtablissementType::class, $etablissement);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        $etablissement->setNom($request->request->get('nom'));
+        $etablissement->setAdresse($request->request->get('adresse'));
+        $etablissement->setEmail($request->request->get('email'));
+        
+        $imageFile = $request->files->get('image');
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
             
-            // Gestion de l'upload de l'image
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-                
-                try {
-                    $imageFile->move(
-                        $this->getParameter('etablissement_images_directory'),
-                        $newFilename
-                    );
-                    $etablissement->setImage($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
+            try {
+                $imageFile->move(
+                    $this->getParameter('etablissement_images_directory'),
+                    $newFilename
+                );
+                $oldImage = $etablissement->getImage();
+                if ($oldImage) {
+                    $oldPath = $this->getParameter('etablissement_images_directory').'/'.$oldImage;
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
                 }
+                $etablissement->setImage($newFilename);
+            } catch (FileException $e) {
+                $this->addFlash('error', 'Erreur lors du téléchargement de l\'image');
             }
-            
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_admin_etablissement_index', [], Response::HTTP_SEE_OTHER);
         }
-
-        return $this->render('admin/etablissement/edit.html.twig', [
-            'etablissement' => $etablissement,
-            'form' => $form,
-        ]);
+        
+        $entityManager->flush();
+        
+        $this->addFlash('success', 'Établissement modifié avec succès');
+        return $this->redirectToRoute('app_admin_etablissement_index');
     }
 
-    #[Route('/{id}', name: 'app_admin_etablissement_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_admin_etablissement_delete', methods: ['POST'])]
     public function delete(Request $request, Etablissement $etablissement, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$etablissement->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$etablissement->getId(), $request->request->get('_token'))) {
+            $oldImage = $etablissement->getImage();
+            if ($oldImage) {
+                $oldPath = $this->getParameter('etablissement_images_directory').'/'.$oldImage;
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
             $entityManager->remove($etablissement);
             $entityManager->flush();
+            $this->addFlash('success', 'Établissement supprimé avec succès');
         }
-
-        return $this->redirectToRoute('app_admin_etablissement_index', [], Response::HTTP_SEE_OTHER);
+        
+        return $this->redirectToRoute('app_admin_etablissement_index');
     }
 }

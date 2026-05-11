@@ -1,0 +1,152 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Questions du quiz{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Questions : {{ quiz.titre }}</h5>
+                    <p class="m-b-0">Gérer les questions et réponses</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_quiz_index') }}">Quiz</a></li>
+                    <li class="breadcrumb-item"><a href="#">{{ quiz.titre }}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Liste des questions</h5>
+                        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">
+                            <i class="fa fa-plus"></i> Ajouter une question
+                        </button>
+                        <a href="{{ path('app_admin_quiz_index') }}" class="btn btn-secondary float-right mr-2">← Retour</a>
+                    </div>
+                    <div class="card-block">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Question</th>
+                                        <th>Réponses</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% set offset = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() %}
+                                {% for question in pagination %}
+                                    <tr>
+                                        <td>{{ offset + loop.index }}</td>
+                                        <td>{{ question.texte }}</td>
+                                        <td>
+                                            <ul class="mb-0">
+                                            {% for reponse in question.reponses %}
+                                                <li class="{% if reponse.estCorrecte %}text-success{% else %}text-muted{% endif %}">
+                                                    {{ reponse.texte }} {% if reponse.estCorrecte %}(✓){% endif %}
+                                                </li>
+                                            {% endfor %}
+                                            </ul>
+                                          </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ question.id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="4" class="text-center">Aucune question</td></tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Affichage de {{ pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1 }} à {{ min(pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage(), pagination.getTotalItemCount()) }} sur {{ pagination.getTotalItemCount() }} questions</small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AJOUT -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_quiz_question_new', {'quizId': quiz.id}) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvelle question</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Texte de la question</label>
+                        <textarea name="texte" class="form-control" rows="2" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ordre</label>
+                        <input type="number" name="ordre" class="form-control" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Réponses (JSON)</label>
+                        <textarea name="reponses" class="form-control" rows="4" placeholder='[
+    {"texte": "Réponse 1", "correcte": true, "points": 10},
+    {"texte": "Réponse 2", "correcte": false, "points": 0}
+]'></textarea>
+                        <small class="text-muted">Format : texte, correcte (true/false), points</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS SUPPRESSION -->
+{% for question in pagination %}
+<div class="modal fade" id="deleteModal{{ question.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_quiz_question_delete', {'quizId': quiz.id, 'id': question.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Supprimer cette question ?</p>
+                    <p class="text-danger">Action irréversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

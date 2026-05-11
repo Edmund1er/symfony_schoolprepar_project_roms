@@ -1,0 +1,214 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des quiz{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="page-block">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="page-header-title">
+                    <h5 class="m-b-10">Gestion des quiz</h5>
+                    <p class="m-b-0">Gérer les questionnaires d'orientation</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ path('app_admin_dashboard') }}"><i class="fa fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="#">Quiz</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pcoded-inner-content">
+    <div class="main-body">
+        <div class="page-wrapper">
+            <div class="page-body">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Liste des quiz</h5>
+                        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">
+                            <i class="fa fa-plus"></i> Nouveau quiz
+                        </button>
+                    </div>
+                    <div class="card-block">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Titre</th>
+                                        <th>Type</th>
+                                        <th>Durée</th>
+                                        <th>Statut</th>
+                                        <th>Questions</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% set offset = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() %}
+                                {% for quiz in pagination %}
+                                    <tr>
+                                        <td>{{ offset + loop.index }}</td>
+                                        <td><strong>{{ quiz.titre }}</strong></td>
+                                        <td>
+                                            {% if quiz.type == 'orientation' %}Orientation
+                                            {% elseif quiz.type == 'personnalite' %}Personnalité
+                                            {% else %}Connaissance{% endif %}
+                                        </td>
+                                        <td>{{ quiz.duree ? quiz.duree ~ ' min' : '-' }}</td>
+                                        <td>
+                                            {% if quiz.estActif %}
+                                                <span class="badge badge-success">Actif</span>
+                                            {% else %}
+                                                <span class="badge badge-secondary">Inactif</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ quiz.questions|length }} qts</td>
+                                        <td class="text-center">
+                                            <a href="{{ path('app_admin_quiz_question_index', {'quizId': quiz.id}) }}" class="btn btn-sm btn-outline-info">
+                                                <i class="fa fa-question-circle"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-outline-warning" data-toggle="modal" data-target="#editModal{{ quiz.id }}">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ quiz.id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% else %}
+                                    <tr><td colspan="7" class="text-center">Aucun quiz</td>\n                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Affichage de {{ pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1 }} à {{ min(pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage(), pagination.getTotalItemCount()) }} sur {{ pagination.getTotalItemCount() }} quiz</small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AJOUT -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_quiz_new') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouveau quiz</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input type="text" name="titre" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="type" class="form-control">
+                            <option value="orientation">Orientation</option>
+                            <option value="personnalite">Personnalité</option>
+                            <option value="connaissance">Connaissance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Durée (minutes)</label>
+                        <input type="number" name="duree" class="form-control" placeholder="Optionnel">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" name="estActif" class="form-check-input" id="estActif" checked>
+                        <label class="form-check-label" for="estActif">Actif</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS EDITION & SUPPRESSION -->
+{% for quiz in pagination %}
+<div class="modal fade" id="editModal{{ quiz.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_quiz_edit', {'id': quiz.id}) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier {{ quiz.titre }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input type="text" name="titre" class="form-control" value="{{ quiz.titre }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="2">{{ quiz.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select name="type" class="form-control">
+                            <option value="orientation" {% if quiz.type == 'orientation' %}selected{% endif %}>Orientation</option>
+                            <option value="personnalite" {% if quiz.type == 'personnalite' %}selected{% endif %}>Personnalité</option>
+                            <option value="connaissance" {% if quiz.type == 'connaissance' %}selected{% endif %}>Connaissance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Durée (minutes)</label>
+                        <input type="number" name="duree" class="form-control" value="{{ quiz.duree }}">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" name="estActif" class="form-check-input" id="estActif{{ quiz.id }}" {% if quiz.estActif %}checked{% endif %}>
+                        <label class="form-check-label" for="estActif{{ quiz.id }}">Actif</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal{{ quiz.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_quiz_delete', {'id': quiz.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Supprimer le quiz <strong>{{ quiz.titre }}</strong> ?</p>
+                    <p class="text-danger">Toutes les questions seront supprimées.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

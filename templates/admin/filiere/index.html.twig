@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Gestion des Filières{% endblock %}
+{% block title %}Gestion des filières{% endblock %}
 
 {% block body %}
 <div class="page-header">
@@ -8,8 +8,8 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <div class="page-header-title">
-                    <h5 class="m-b-10">Liste des Filières Académiques</h5>
-                    <p class="m-b-0">Gérer les programmes et spécialités d'enseignement</p>
+                    <h5 class="m-b-10">Gestion des filières</h5>
+                    <p class="m-b-0">Gérer les filières de formation</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -28,93 +28,53 @@
             <div class="page-body">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Filières Académiques</h5>
-                        <a href="{{ path('app_admin_filiere_new') }}" class="btn btn-primary float-right">
-                            <i class="fa fa-plus"></i> Ajouter une filière
-                        </a>
+                        <h5>Liste des filières</h5>
+                        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">
+                            <i class="fa fa-plus"></i> Nouvelle filière
+                        </button>
                     </div>
                     <div class="card-block">
                         <div class="table-responsive">
-                            <table class="table table-hover table-bordered">
+                            <table class="table table-bordered table-hover">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th style="width: 5%">#</th>
-                                        <th style="width: 10%">APERÇU</th>
-                                        <th style="width: 25%">NOM DE LA FILIÈRE</th>
-                                        <th style="width: 40%">DESCRIPTION</th>
-                                        <th style="width: 20%">ACTIONS</th>
+                                        <th>#</th>
+                                        <th>Nom</th>
+                                        <th>Description</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {% for filiere in filieres %}
+                                {% set offset = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() %}
+                                {% for filiere in pagination %}
                                     <tr>
-                                        <td class="text-center">{{ loop.index }}</td>
+                                        <td>{{ offset + loop.index }}</td>
+                                        <td><strong>{{ filiere.nom }}</strong></td>
+                                        <td>{{ filiere.description|slice(0, 100) }}{% if filiere.description|length > 100 %}...{% endif %}</td>
                                         <td class="text-center">
-                                            {% if filiere.image %}
-                                                <img src="{{ asset('assets/admin/images/filieres/' ~ filiere.image) }}" 
-                                                     alt="{{ filiere.nom }}" 
-                                                     width="40" height="40" 
-                                                     style="object-fit: cover; border-radius: 8px;">
-                                            {% else %}
-                                                <div class="avatar">
-                                                    <i class="fa fa-graduation-cap fa-2x text-c-purple"></i>
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <strong>{{ filiere.nom }}</strong><br>
-                                            <small class="text-muted">Code: FIL-{{ '%02d'|format(loop.index) }}</small>
-                                        </td>
-                                        <td>{{ filiere.description|length > 80 ? filiere.description|slice(0, 80) ~ '...' : filiere.description }}</td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                <a href="{{ path('app_admin_filiere_show', {'id': filiere.id}) }}" 
-                                                   class="btn btn-sm btn-info" title="Voir">
-                                                    <i class="fa fa-eye"></i>
-                                                </a>
-                                                <a href="{{ path('app_admin_filiere_edit', {'id': filiere.id}) }}" 
-                                                   class="btn btn-sm btn-warning" title="Modifier">
-                                                    <i class="fa fa-pencil"></i>
-                                                </a>
-                                                <button type="button" 
-                                                        class="btn btn-sm btn-danger" 
-                                                        data-toggle="modal" 
-                                                        data-target="#deleteModalFiliere{{ filiere.id }}"
-                                                        title="Supprimer">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </div>
-                                            
-                                            <div class="modal fade" id="deleteModalFiliere{{ filiere.id }}" tabindex="-1" role="dialog">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Confirmer la suppression</h5>
-                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Êtes-vous sûr de vouloir supprimer la filière <strong>{{ filiere.nom }}</strong> ?</p>
-                                                            <p class="text-danger">Cette action est irréversible.</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                                            <form method="post" action="{{ path('app_admin_filiere_delete', {'id': filiere.id}) }}">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ filiere.id) }}">
-                                                                <button type="submit" class="btn btn-danger">Confirmer</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-warning" data-toggle="modal" data-target="#editModal{{ filiere.id }}">
+                                                <i class="fa fa-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="modal" data-target="#deleteModal{{ filiere.id }}">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 {% else %}
-                                    <tr>
-                                        <td colspan="5" class="text-center">Aucune filière trouvée</td>
-                                    </tr>
+                                    <tr><td colspan="4" class="text-center">Aucune filière</td></tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                        
+                        <!-- Pagination simple -->
+                        <div class="row mt-3">
+                            <div class="col-sm-6">
+                                <small class="text-muted">Affichage de {{ pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1 }} à {{ min(pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage(), pagination.getTotalItemCount()) }} sur {{ pagination.getTotalItemCount() }} filières</small>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                {{ knp_pagination_render(pagination) }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -122,4 +82,94 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL AJOUT -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_filiere_new') }}" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nouvelle filière</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="nom" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Image</label>
+                        <input type="file" name="image" class="form-control-file">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS EDITION & SUPPRESSION -->
+{% for filiere in pagination %}
+<div class="modal fade" id="editModal{{ filiere.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_filiere_edit', {'id': filiere.id}) }}" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier {{ filiere.nom }}</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" name="nom" class="form-control" value="{{ filiere.nom }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="3">{{ filiere.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Image</label>
+                        {% if filiere.image %}<img src="{{ asset('assets/admin/images/filieres/' ~ filiere.image) }}" width="60" class="mb-2 d-block">{% endif %}
+                        <input type="file" name="image" class="form-control-file">
+                        <small class="text-muted">Laisser vide pour garder l'image actuelle</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal{{ filiere.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ path('app_admin_filiere_delete', {'id': filiere.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ filiere.id) }}">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmer la suppression</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Supprimer la filière <strong>{{ filiere.nom }}</strong> ?</p>
+                    <p class="text-danger">Action irréversible.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}

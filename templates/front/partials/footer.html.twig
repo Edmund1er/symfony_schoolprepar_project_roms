@@ -1,17 +1,14 @@
-<footer class="site-footer">
+<footer class="site-footer" style="background: #2c3e50; color: #ecf0f1; margin-top: 50px;">
     <div class="footer-widgets">
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="foot-about">
-                        {# Chemin corrigé vers le logo du footer #}
-                        <a class="foot-logo" href="{{ path('app_home') }}">
+                        <a class="foot-logo" href="{{ path('front_home') }}">
                             <img src="{{ asset('assets/front/images/foot-logo.png') }}" alt="Logo SchoolPrepar">
                         </a>
                         <p>SchoolPrepar vous aide à trouver la meilleure formation pour votre avenir.</p>
-                        <p class="footer-copyright">
-                            Copyright &copy; {{ "now"|date('Y') }} Tous droits réservés.
-                        </p>
+                        <p class="footer-copyright">Copyright &copy; {{ "now"|date('Y') }} Tous droits réservés.</p>
                     </div>
                 </div>
 
@@ -20,7 +17,7 @@
                         <h2>Contact</h2>
                         <ul>
                             <li>Email: info@schoolprepar.tg</li>
-                            <li>Phone: (+228) 22 22 22 22</li>
+                            <li>Phone: (+228) 90 00 00 00</li>
                             <li>Lomé, Togo</li>
                         </ul>
                     </div>
@@ -30,10 +27,15 @@
                     <div class="quick-links flex flex-wrap">
                         <h2 class="w-100">Liens Rapides</h2>
                         <ul class="w-50">
-                            {# Correction : app_home au lieu de home #}
-                            <li><a href="{{ path('app_home') }}">Accueil</a></li>
+                            <li><a href="{{ path('front_home') }}">Accueil</a></li>
                             <li><a href="{{ path('filiere_index') }}">Filières</a></li>
                             <li><a href="{{ path('etablissement_index') }}">Établissements</a></li>
+                            <li><a href="{{ path('forum_index') }}">Forum</a></li>
+                        </ul>
+                        <ul class="w-50">
+                            <li><a href="{{ path('quiz_index') }}">Quiz</a></li>
+                            <li><a href="{{ path('mentorat_index') }}">Mentors</a></li>
+                            <li><a href="#">Contact</a></li>
                         </ul>
                     </div>
                 </div>
@@ -44,6 +46,7 @@
                         <ul class="follow-us flex flex-wrap align-items-center">
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
                         </ul>
                     </div>
                 </div>
@@ -51,15 +54,11 @@
         </div>
     </div>
 
-    <div class="footer-bar">
+    <div class="footer-bar" style="background: #1a252f; padding: 20px 0;">
         <div class="container">
             <div class="row flex-wrap justify-content-center justify-content-lg-between align-items-center">
-                <div class="col-12 col-lg-6">
-                    <div class="download-apps flex flex-wrap justify-content-center justify-content-lg-start align-items-center">
-                        {# Chemins corrigés vers les badges stores #}
-                        <a href="#"><img src="{{ asset('assets/front/images/app-store.png') }}" alt="App Store"></a>
-                        <a href="#"><img src="{{ asset('assets/front/images/play-store.png') }}" alt="Play Store"></a>
-                    </div>
+                <div class="col-12 text-center">
+                    <p class="mb-0">&copy; {{ "now"|date('Y') }} SchoolPrepar. Tous droits réservés.</p>
                 </div>
             </div>
         </div>
