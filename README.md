@@ -189,32 +189,32 @@ Routes principales
 Front-office
 Route	Description
 /	Page d'accueil
-/filiere	Liste des filieres
-/etablissement	Liste des etablissements
-/evenement	Liste des evenements
-/forum	Forum communautaire
-/quiz	Quiz d'orientation
-/mentorat	Liste des mentors
-/message	Messagerie privee
-/profil	Mon profil
-/connexion	Connexion
-/inscription	Inscription
+/filiere	:Liste des filieres
+/etablissement	:Liste des etablissements
+/evenement	: Liste des evenements
+/forum	: Forum communautaire
+/quiz	:Quiz d'orientation
+/mentorat :	Liste des mentors
+/message	:Messagerie privee
+/profil	: Mon profil
+/connexion :	Connexion
+/inscription :	Inscription
 Back-office
 Route	Description
-/admin	Dashboard
-/admin/filiere	Gestion des filieres
-/admin/etablissement	Gestion des etablissements
-/admin/evenement	Gestion des evenements
-/admin/utilisateur	Gestion des utilisateurs
-/admin/forum/categorie	Gestion des categories forum
-/admin/quiz	Gestion des quiz
-/admin/mentorat	Gestion du mentorat
+/admin	: Dashboard
+/admin/filiere :	Gestion des filieres
+/admin/etablissement :	Gestion des etablissements
+/admin/evenement :	Gestion des evenements
+/admin/utilisateur :	Gestion des utilisateurs
+/admin/forum/categorie :	Gestion des categories forum
+/admin/quiz :	Gestion des quiz
+/admin/mentorat :	Gestion du mentorat
 Auteur
 Champ	Information
-Nom	ALI Pouwedeou Romaric
-Filiere	GL (Genie Logiciel) - Licence 2
+Nom	: ALI Pouwedeou Romaric
+Filiere	: GL (Genie Logiciel) - Licence 2
 Semestre	4
-Institution	IPNet Institute of Technology
+Institution  :	IPNet Institute of Technology
 Annee academique	2025-2026
 UE	IT 232 - Developpement Web II
 Encadrant	M. EDOU Dodji
